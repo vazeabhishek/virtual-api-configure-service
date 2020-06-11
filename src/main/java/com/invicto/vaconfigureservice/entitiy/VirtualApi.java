@@ -13,10 +13,12 @@ public class VirtualApi {
     @Id
     @Column(name = "VIRTUAL_API_ID")
     private String virtualApiId;
-    @ManyToOne(targetEntity = Project.class,fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
     private Project project;
     @Column(name = "CREATED_BY")
     private String createdBy;
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
+    @OneToOne(mappedBy = "virtualApi")
+    private VirtualApiSpecs virtualApiSpecs;
 }

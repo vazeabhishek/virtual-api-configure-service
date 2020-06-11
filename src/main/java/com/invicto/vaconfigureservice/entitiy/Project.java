@@ -9,8 +9,7 @@ import java.util.List;
 @Entity(name = "PROJECT")
 @Data
 @Table(name = "PROJECT",
-        indexes = {@Index(name = "primary_index", columnList = "PROJECT_ID", unique = true),
-                @Index(name = "secondary_index", columnList = "PROJECT_NAME", unique = false)})
+        indexes = {@Index(name = "primary_index", columnList = "PROJECT_ID", unique = true)})
 public class Project {
     @Id
     @Column(name = "PROJECT_ID")
