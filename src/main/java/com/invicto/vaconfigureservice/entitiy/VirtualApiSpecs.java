@@ -19,10 +19,14 @@ public class VirtualApiSpecs {
     private String requestMethod;
     @Column(name = "REQUEST_PAYLOAD")
     private String requestPayload;
+    @Column(name = "REQUEST_HEADERS")
+    private String requestHeaders;
     @Column(name = "RESPONSE_PAYLOAD")
     private String responsePayload;
     @Column(name = "RESPONSE_CODE")
     private int responseCode;
+    @Column(name = "RESPONSE_HEADERS")
+    private String responseHeaders;
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
     @Column(name = "CREATED_BY")

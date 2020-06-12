@@ -13,6 +13,8 @@ public class VirtualApi {
     @Id
     @Column(name = "VIRTUAL_API_ID")
     private String virtualApiId;
+    @Column(name = "VIRTUAL_API_NAME")
+    private String virtualApiName;
     @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
     private Project project;
     @Column(name = "CREATED_BY")

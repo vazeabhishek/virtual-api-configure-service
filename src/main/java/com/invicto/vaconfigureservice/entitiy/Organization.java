@@ -1,6 +1,8 @@
 package com.invicto.vaconfigureservice.entitiy;
 
 import lombok.Data;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.List;
 public class Organization {
     @Id
     @Column(name = "ORG_ID", nullable = false)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int orgId;
     @Column(name = "ORG_NAME", nullable = false)
     private String orgName;
