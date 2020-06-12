@@ -1,7 +1,9 @@
 package com.invicto.vaconfigureservice.service;
 
 import com.invicto.vaconfigureservice.entitiy.Organization;
+import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.model.VoOrganization;
+import com.invicto.vaconfigureservice.model.VoProject;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -9,6 +11,9 @@ import java.util.List;
 
 public interface OrganizationService {
     public ResponseEntity<String> createOrganization(String userToken,VoOrganization voOrganization);
-    public ResponseEntity<String> deleteOrganization(String userToken,Integer orgId);
+    public ResponseEntity<String> deleteOrganization(String userToken,Long orgId);
     public ResponseEntity<List<Organization>> findAllOrgnizationByUser(String userToken);
+    public ResponseEntity<String> addProject(String userToken,Long orgId, VoProject voProject);
+    public ResponseEntity<String> removeProject(String userToken,Long orgId, Long projId);
+    public  ResponseEntity<List<Project>> getAllProjects(Long orgId);
 }

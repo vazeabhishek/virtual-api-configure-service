@@ -7,11 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrganizationRepository extends CrudRepository<Organization, Integer> {
+public interface OrganizationRepository extends CrudRepository<Organization, Long> {
 
-    Organization findByOrgId(Integer id);
+    Organization findByOrgId(Long id);
 
     List<Organization> findByOrgName(String orgName);
 
     List<Organization> findByOrgOwnerUserTokenLike(String token);
+
 }

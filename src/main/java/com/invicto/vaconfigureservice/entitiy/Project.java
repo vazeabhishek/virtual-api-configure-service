@@ -1,5 +1,6 @@
 package com.invicto.vaconfigureservice.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,8 +14,10 @@ import java.util.List;
 public class Project {
     @Id
     @Column(name = "PROJECT_ID")
-    private int projectId;
-    @ManyToOne(targetEntity = Organization.class, fetch = FetchType.EAGER)
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long projectId;
+    @ManyToOne(targetEntity = Organization.class, fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @JsonIgnore
     private Organization organization;
     @Column(name = "PROJECT_NAME")
     private String projectName;
@@ -27,5 +30,6 @@ public class Project {
     @Column(name = "IS_ACTIVE")
     private boolean isActive;
     @OneToMany(targetEntity = VirtualApi.class,mappedBy = "virtualApiId",orphanRemoval = true)
+    @JsonIgnore
     List<VirtualApi> virtualApisList;
 }

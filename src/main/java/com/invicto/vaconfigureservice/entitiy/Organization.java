@@ -1,5 +1,6 @@
 package com.invicto.vaconfigureservice.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -17,7 +18,7 @@ public class Organization {
     @Id
     @Column(name = "ORG_ID", nullable = false)
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private int orgId;
+    private long orgId;
     @Column(name = "ORG_NAME", nullable = false)
     private String orgName;
     @Column(name = "ORG_OWNER_USER_TOKEN", nullable = false)
@@ -30,6 +31,7 @@ public class Organization {
     private String createdBy;
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
-    @OneToMany(orphanRemoval = true, targetEntity = Project.class, mappedBy = "projectId")
+    @OneToMany(orphanRemoval = true, targetEntity = Project.class, mappedBy = "organization",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Project> projectList;
 }

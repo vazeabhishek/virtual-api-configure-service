@@ -1,5 +1,6 @@
 package com.invicto.vaconfigureservice.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,5 +23,6 @@ public class VirtualApi {
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
     @OneToOne(mappedBy = "virtualApi")
+    @JsonIgnore
     private VirtualApiSpecs virtualApiSpecs;
 }

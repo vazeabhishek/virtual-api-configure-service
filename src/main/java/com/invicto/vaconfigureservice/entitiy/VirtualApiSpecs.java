@@ -1,5 +1,6 @@
 package com.invicto.vaconfigureservice.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class VirtualApiSpecs {
     private String virtualApiId;
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "VIRTUAL_API_ID", nullable = false)
+    @JsonIgnore
     private VirtualApi virtualApi;
     @Column(name = "REQUEST_METHOD")
     private String requestMethod;
