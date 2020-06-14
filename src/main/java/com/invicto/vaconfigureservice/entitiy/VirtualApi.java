@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "VIRTUAL_API")
 @Data
@@ -16,13 +17,15 @@ public class VirtualApi {
     private String virtualApiId;
     @Column(name = "VIRTUAL_API_NAME")
     private String virtualApiName;
+    @Column(name = "REQUEST_METHOD")
+    private String requestMethod;
     @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
     private Project project;
     @Column(name = "CREATED_BY")
     private String createdBy;
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
-    @OneToOne(mappedBy = "virtualApi")
+    @OneToMany(mappedBy = "virtualApi",fetch = FetchType.EAGER)
     @JsonIgnore
-    private VirtualApiSpecs virtualApiSpecs;
+    private List<VirtualApiSpecs> virtualApiSpecs;
 }

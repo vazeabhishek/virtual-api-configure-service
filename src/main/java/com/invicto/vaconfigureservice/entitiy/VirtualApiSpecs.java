@@ -13,12 +13,11 @@ public class VirtualApiSpecs {
     @Id
     @Column(name = "VIRTUAL_API_SPECS_ID")
     private String virtualApiId;
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "VIRTUAL_API_ID", nullable = false)
     @JsonIgnore
     private VirtualApi virtualApi;
-    @Column(name = "REQUEST_METHOD")
-    private String requestMethod;
+
     @Column(name = "REQUEST_PAYLOAD")
     private String requestPayload;
     @Column(name = "REQUEST_HEADERS")

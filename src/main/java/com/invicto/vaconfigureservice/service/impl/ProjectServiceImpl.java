@@ -47,4 +47,9 @@ class ProjectServiceImpl implements ProjectService {
         return projectRepository.findByOrganization(organization);
     }
 
+    @Override
+    public Project getProjectByOrganizationAndId(Organization organization, Long id) {
+        return projectRepository.findByOrganizationAndProjectId(organization, id);
+    }
+
 }

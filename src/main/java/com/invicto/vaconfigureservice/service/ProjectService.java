@@ -11,4 +11,5 @@ public interface ProjectService {
     public Project createProject(String userToken, VoProject voProject, Organization organization);
     public ResponseEntity<String> deleteProject(Long projectId);
     public List<Project> getProjectsByOrganization(Organization organization);
+    public Project getProjectByOrganizationAndId(Organization organization, Long id);
 }
