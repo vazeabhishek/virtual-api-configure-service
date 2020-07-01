@@ -2,6 +2,7 @@ package com.invicto.vaconfigureservice.api;
 
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.model.VoOrganization;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController("/")
 public class OrganizationController {
+
     @Autowired
     private OrganizationService organizationService;
 
@@ -29,6 +31,7 @@ public class OrganizationController {
 
     @PostMapping("orgs/{orgId}/projects/{projId}/apis")
     public ResponseEntity<String> createApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @RequestBody VoVirtualApi voVirtualApi) {
+        organizationService.createApi(userToken, orgId, projId, voVirtualApi);
         return null;
     }
 
@@ -59,14 +62,13 @@ public class OrganizationController {
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}/apis")
-    public ResponseEntity<String> getApis(@RequestHeader(name = "user") String userToken, @RequestBody VoOrganization voOrganization) {
-        return null;
+    public ResponseEntity<List<VirtualApi>> getApis(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
+        return organizationService.getAllApis(orgId, projId);
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
     public ResponseEntity<String> getApisById(@RequestHeader(name = "user") String userToken, @RequestBody VoOrganization voOrganization) {
         return null;
     }
-
 
 }

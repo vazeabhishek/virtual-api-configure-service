@@ -8,7 +8,6 @@ import com.invicto.vaconfigureservice.repository.VirtualApiRepository;
 import com.invicto.vaconfigureservice.repository.VirtualApiSpecsRepository;
 import com.invicto.vaconfigureservice.service.VirtualApiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
     private VirtualApiSpecsRepository virtualApiSpecsRepository;
 
     @Override
-    public ResponseEntity<String> createApi(String user, VoVirtualApi voVirtualApi) {
+    public String createApi(String user, VoVirtualApi voVirtualApi) {
         VirtualApi virtualApi = new VirtualApi();
         virtualApi.setCreatedBy(user);
         virtualApi.setCreatedDate(LocalDateTime.now());
@@ -39,21 +38,28 @@ public class VirtualApiServiceImpl implements VirtualApiService {
             virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getResponsePayload());
             virtualApiSpecsList.add(virtualApiSpecs);
         });
+        virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
+        virtualApiRepository.save(virtualApi);
+        return ""+virtualApi.getVirtualApiId();
+    }
+
+    @Override
+    public Boolean deleteApi(String user, String apiId) {
         return null;
     }
 
     @Override
-    public ResponseEntity<String> deleteApi(String user, String apiId) {
+    public List<VirtualApi> getAllApisFromProject(Project project) {
         return null;
     }
 
     @Override
-    public ResponseEntity<String> getAllApisFromProject(Project project) {
+    public List<VirtualApiSpecs> getApiSpecs(VirtualApi virtualApi) {
         return null;
     }
 
     @Override
-    public ResponseEntity<String> getApiSpecs(VirtualApi virtualApi) {
-        return null;
+    public VirtualApi fetchApiByProjectAndId(Project project, String id) {
+        return virtualApiRepository.findByProjectAndVirtualApiId(project, id);
     }
 }

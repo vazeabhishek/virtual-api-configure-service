@@ -1,14 +1,18 @@
 package com.invicto.vaconfigureservice.entitiy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "ORGANIZATION")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @Table(name = "ORGANIZATION",
         indexes = {@Index(name = "primary_index", columnList = "ORG_ID", unique = true),
                 @Index(name = "secondary_index", columnList = "ORG_NAME", unique = false)})
@@ -32,4 +36,17 @@ public class Organization {
     @OneToMany(orphanRemoval = true, targetEntity = Project.class, mappedBy = "organization",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Project> projectList;
+
+    @Override
+    public String toString() {
+        return "Organization{" +
+                "orgId=" + orgId +
+                ", orgName='" + orgName + '\'' +
+                ", orgOwnerUserToken='" + orgOwnerUserToken + '\'' +
+                ", orgToken='" + orgToken + '\'' +
+                ", createdDate=" + createdDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", isActive=" + isActive +
+                '}';
+    }
 }

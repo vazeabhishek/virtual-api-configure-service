@@ -8,5 +8,6 @@ import java.util.List;
 public class VoVirtualApi {
     private String name;
     private String requestMethod;
+    private String path;
     List<VoVirtualApiSpec> voVirtualApiSpecList;
 }

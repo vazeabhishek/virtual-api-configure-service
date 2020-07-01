@@ -2,13 +2,18 @@ package com.invicto.vaconfigureservice.entitiy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "VIRTUAL_API")
-@Data
+@Getter
+@Setter
 @Table(name = "VIRTUAL_API",
         indexes = {@Index(name = "primary_index", columnList = "VIRTUAL_API_ID", unique = true)},
         uniqueConstraints =
@@ -16,7 +21,8 @@ import java.util.List;
 public class VirtualApi {
     @Id
     @Column(name = "VIRTUAL_API_ID")
-    private String virtualApiId;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long virtualApiId;
     @Column(name = "VIRTUAL_API_NAME")
     private String virtualApiName;
     @Column(name = "VIRTUAL_API_PATH")
@@ -30,7 +36,19 @@ public class VirtualApi {
     private String createdBy;
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonIgnore
     private List<VirtualApiSpecs> virtualApiSpecs;
+
+    @Override
+    public String toString() {
+        return "VirtualApi{" +
+                "virtualApiId='" + virtualApiId + '\'' +
+                ", virtualApiName='" + virtualApiName + '\'' +
+                ", virtualApiPath='" + virtualApiPath + '\'' +
+                ", requestMethod='" + requestMethod + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }

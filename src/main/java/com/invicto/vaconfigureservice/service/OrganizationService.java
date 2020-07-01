@@ -2,8 +2,10 @@ package com.invicto.vaconfigureservice.service;
 
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.model.VoOrganization;
 import com.invicto.vaconfigureservice.model.VoProject;
+import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -16,4 +18,6 @@ public interface OrganizationService {
     public ResponseEntity<String> addProject(String userToken,Long orgId, VoProject voProject);
     public ResponseEntity<String> removeProject(String userToken,Long orgId, Long projId);
     public  ResponseEntity<List<Project>> getAllProjects(Long orgId);
+    public ResponseEntity<List<VirtualApi>> getAllApis(Long orgId, Long projId);
+    public ResponseEntity<String> createApi(String userToken, Long orgId, Long projId, VoVirtualApi voVirtualApi);
 }
