@@ -50,7 +50,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public List<VirtualApi> getAllApisFromProject(Project project) {
-        return null;
+       return virtualApiRepository.findByProject(project);
     }
 
     @Override

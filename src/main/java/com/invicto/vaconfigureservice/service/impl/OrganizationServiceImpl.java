@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
@@ -103,6 +104,24 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public ResponseEntity<VirtualApi> getApisById(Long orgId, Long projId, Long ApiId) {
+        Organization organization = organizationRepository.findByOrgId(orgId);
+        if (Objects.nonNull(organization)) {
+            Project project = projectService.getProjectByOrganizationAndId(organization, projId);
+            if (Objects.nonNull(project)) {
+                List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(project);
+                Optional<VirtualApi> virtualApi = virtualApiList.stream().filter(vApi ->
+                        vApi.getVirtualApiId().compareTo(ApiId) == 0
+                ).findFirst();
+                if(virtualApi.isPresent())
+                    return new ResponseEntity<>(virtualApi.get(),HttpStatus.OK);
+            }
+
+        }
+        return null;
+    }
+
+    @Override
     public ResponseEntity<String> createApi(String userToken, Long orgId, Long projId, VoVirtualApi voVirtualApi) {
         Organization organization = organizationRepository.findByOrgId(orgId);
         Project project = projectService.getProjectByOrganizationAndId(organization, projId);
@@ -130,7 +149,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
             virtualApiList.add(virtualApi);
             organizationRepository.save(organization);
-            System.out.println("SAVED");
+
         }
         return null;
     }

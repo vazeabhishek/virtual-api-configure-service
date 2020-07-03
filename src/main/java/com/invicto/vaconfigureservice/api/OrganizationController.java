@@ -50,7 +50,6 @@ public class OrganizationController {
         return null;
     }
 
-
     @GetMapping("orgs")
     public ResponseEntity<List<Organization>> getOrganization(@RequestHeader(name = "user") String userToken) {
         return organizationService.findAllOrgnizationByUser(userToken);
@@ -67,8 +66,8 @@ public class OrganizationController {
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
-    public ResponseEntity<String> getApisById(@RequestHeader(name = "user") String userToken, @RequestBody VoOrganization voOrganization) {
-        return null;
+    public ResponseEntity<VirtualApi> getApisById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
+        return organizationService.getApisById(orgId, projId, apiId);
     }
 
 }

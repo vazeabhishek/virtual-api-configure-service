@@ -19,10 +19,8 @@ public class VirtualApiSpecs {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long virtualApiId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    //@JoinColumn(name = "VIRTUAL_API_ID", nullable = false)
     @JsonIgnore
     private VirtualApi virtualApi;
-
     @Column(name = "REQUEST_PAYLOAD")
     private String requestPayload;
     /*@Column(name = "REQUEST_HEADERS")

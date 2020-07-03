@@ -31,13 +31,14 @@ public class VirtualApi {
     private String requestMethod;
     @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "PROJECT_ID")
+    @JsonIgnore
     private Project project;
     @Column(name = "CREATED_BY")
     private String createdBy;
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JsonIgnore
+
     private List<VirtualApiSpecs> virtualApiSpecs;
 
     @Override

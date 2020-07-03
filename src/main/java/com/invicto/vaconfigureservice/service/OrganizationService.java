@@ -17,7 +17,8 @@ public interface OrganizationService {
     public ResponseEntity<List<Organization>> findAllOrgnizationByUser(String userToken);
     public ResponseEntity<String> addProject(String userToken,Long orgId, VoProject voProject);
     public ResponseEntity<String> removeProject(String userToken,Long orgId, Long projId);
-    public  ResponseEntity<List<Project>> getAllProjects(Long orgId);
+    public ResponseEntity<List<Project>> getAllProjects(Long orgId);
     public ResponseEntity<List<VirtualApi>> getAllApis(Long orgId, Long projId);
+    public ResponseEntity<VirtualApi> getApisById(Long orgId, Long projId,Long ApiId);
     public ResponseEntity<String> createApi(String userToken, Long orgId, Long projId, VoVirtualApi voVirtualApi);
 }
