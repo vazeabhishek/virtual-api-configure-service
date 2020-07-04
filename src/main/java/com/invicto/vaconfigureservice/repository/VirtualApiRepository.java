@@ -6,9 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface VirtualApiRepository extends CrudRepository<VirtualApi, String> {
-    public VirtualApi findByVirtualApiId(String id);
+public interface VirtualApiRepository extends CrudRepository<VirtualApi, Long> {
+    public VirtualApi findByVirtualApiId(Long id);
     public List<VirtualApi> findByVirtualApiNameLike(String name);
     public List<VirtualApi> findByProject(Project project);
-    public VirtualApi findByProjectAndVirtualApiId(Project project, String id);
+    public VirtualApi findByProjectAndVirtualApiId(Project project, Long id);
 }

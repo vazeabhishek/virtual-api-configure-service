@@ -1,18 +1,24 @@
 package com.invicto.vaconfigureservice.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
+import com.invicto.vaconfigureservice.exception.ApiNotExistException;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.VirtualApiRepository;
 import com.invicto.vaconfigureservice.repository.VirtualApiSpecsRepository;
+import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.VirtualApiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class VirtualApiServiceImpl implements VirtualApiService {
@@ -22,8 +28,13 @@ public class VirtualApiServiceImpl implements VirtualApiService {
     @Autowired
     private VirtualApiSpecsRepository virtualApiSpecsRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private final String SUCCESS = "success";
+
     @Override
-    public String createApi(String user, VoVirtualApi voVirtualApi) {
+    public ResponseEntity<String> createApi(String user, VoVirtualApi voVirtualApi) {
         VirtualApi virtualApi = new VirtualApi();
         virtualApi.setCreatedBy(user);
         virtualApi.setCreatedDate(LocalDateTime.now());
@@ -40,26 +51,35 @@ public class VirtualApiServiceImpl implements VirtualApiService {
         });
         virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
         virtualApiRepository.save(virtualApi);
-        return ""+virtualApi.getVirtualApiId();
+        GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(virtualApi.getVirtualApiId()));
+        genericResponse.setIdentifier(String.valueOf(virtualApi.getVirtualApiId()));
+        return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
     }
 
     @Override
-    public Boolean deleteApi(String user, String apiId) {
-        return null;
+    public ResponseEntity<String> deleteApi(String user, Long apiId) {
+        VirtualApi virtualApi = virtualApiRepository.findByVirtualApiId(apiId);
+        if (Objects.nonNull(virtualApi)) {
+            virtualApiRepository.delete(virtualApi);
+            GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(apiId));
+            return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
+        } else {
+            throw new ApiNotExistException(String.valueOf(apiId));
+        }
     }
 
     @Override
     public List<VirtualApi> getAllApisFromProject(Project project) {
-       return virtualApiRepository.findByProject(project);
+        return virtualApiRepository.findByProject(project);
     }
 
     @Override
     public List<VirtualApiSpecs> getApiSpecs(VirtualApi virtualApi) {
-        return null;
+        return virtualApiSpecsRepository.findByVirtualApi(virtualApi);
     }
 
     @Override
-    public VirtualApi fetchApiByProjectAndId(Project project, String id) {
+    public VirtualApi fetchApiByProjectAndId(Project project, Long id) {
         return virtualApiRepository.findByProjectAndVirtualApiId(project, id);
     }
 }
