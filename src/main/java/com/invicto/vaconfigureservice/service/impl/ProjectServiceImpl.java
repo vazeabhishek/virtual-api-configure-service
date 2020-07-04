@@ -26,6 +26,8 @@ class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private final String SUCCESS = "success";
+
     @Override
     public Project createProject(String userToken, VoProject voProject, Organization organization) {
         Project project = new Project();
@@ -43,7 +45,7 @@ class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
             projectRepository.delete(project);
-            GenericResponse genericResponse = new GenericResponse("SUCCESS", String.valueOf(projectId));
+            GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(projectId));
             return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
         } else
             throw new ProjectNotExistException(String.valueOf(projectId));

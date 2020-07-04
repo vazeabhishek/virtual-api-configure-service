@@ -110,7 +110,8 @@ public class OrganizationServiceImpl implements OrganizationService {
             List<Project> projects = projectService.getProjectsByOrganization(organization);
             return new ResponseEntity<List<Project>>(projects, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        else
+            throw new OrganizationNotExistException(String.valueOf(orgId));
     }
 
     @Override
