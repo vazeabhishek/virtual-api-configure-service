@@ -83,7 +83,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (Objects.nonNull(organization)) {
             Project project = projectService.createProject(userToken, voProject, organization);
             GenericResponse genericResponse = new GenericResponse("SUCCESS", String.valueOf(project.getProjectId()));
-            return new ResponseEntity<String>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
+            return new ResponseEntity<String>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
         } else {
             throw new OrganizationNotExistException(String.valueOf(orgId));
         }

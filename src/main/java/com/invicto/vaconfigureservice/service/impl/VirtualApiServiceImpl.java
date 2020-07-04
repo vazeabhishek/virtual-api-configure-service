@@ -41,6 +41,8 @@ public class VirtualApiServiceImpl implements VirtualApiService {
         virtualApi.setCreatedBy(user);
         virtualApi.setCreatedDate(LocalDateTime.now());
         virtualApi.setVirtualApiName(voVirtualApi.getName());
+        virtualApi.setVirtualApiPath(voVirtualApi.getPath());
+        virtualApi.setRequestMethod(voVirtualApi.getRequestMethod());
         voVirtualApi.setRequestMethod(virtualApi.getRequestMethod());
         List<VirtualApiSpecs> virtualApiSpecsList = new ArrayList<>();
         voVirtualApi.getVoVirtualApiSpecList().stream().forEach(voVirtualApiSpec -> {

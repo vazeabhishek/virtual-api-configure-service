@@ -14,7 +14,7 @@ public class VirtualApiSpecs {
     @Id
     @Column(name = "VIRTUAL_API_SPECS_ID")
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long virtualApiId;
+    private Long virtualApiSpecsId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private VirtualApi virtualApi;
@@ -32,7 +32,7 @@ public class VirtualApiSpecs {
     @Override
     public String toString() {
         return "VirtualApiSpecs{" +
-                "virtualApiId='" + virtualApiId + '\'' +
+                "virtualApiId='" + virtualApiSpecsId + '\'' +
                 ", requestPayload='" + requestPayload + '\'' +
                 ", responsePayload='" + responsePayload + '\'' +
                 ", responseCode=" + responseCode +

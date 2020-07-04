@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "VIRTUAL_API",
         indexes = {@Index(name = "primary_index", columnList = "VIRTUAL_API_ID", unique = true)},
         uniqueConstraints =
-        @UniqueConstraint(columnNames = {"VIRTUAL_API_PATH", "PROJECT_ID"}))
+        @UniqueConstraint(columnNames = {"REQUEST_METHOD","VIRTUAL_API_PATH", "PROJECT_ID"}))
 public class VirtualApi {
     @Id
     @Column(name = "VIRTUAL_API_ID")
