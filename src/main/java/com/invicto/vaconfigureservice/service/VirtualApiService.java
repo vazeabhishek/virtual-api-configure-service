@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface VirtualApiService {
-     ResponseEntity<String> createApi(String user, VoVirtualApi voVirtualApi);
+     ResponseEntity<String> createApi(String user,Project project, VoVirtualApi voVirtualApi);
      ResponseEntity<String> deleteApi(String user,Long apiId);
      List<VirtualApi> getAllApisFromProject(Project project);
      List<VirtualApiSpecs> getApiSpecs(VirtualApi virtualApi);

@@ -109,8 +109,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (Objects.nonNull(organization)) {
             List<Project> projects = projectService.getProjectsByOrganization(organization);
             return new ResponseEntity<List<Project>>(projects, HttpStatus.OK);
-        }
-        else
+        } else
             throw new OrganizationNotExistException(String.valueOf(orgId));
     }
 
@@ -148,35 +147,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public ResponseEntity<String> createApi(String userToken, Long orgId, Long projId, VoVirtualApi voVirtualApi) {
         Organization organization = organizationRepository.findByOrgId(orgId);
-        Project project = projectService.getProjectByOrganizationAndId(organization, projId);
-        if (Objects.nonNull(project)) {
-            // check if user has permission to this project
-            List<VirtualApi> virtualApiList = project.getVirtualApisList();
-            VirtualApi virtualApi = new VirtualApi();
-            virtualApi.setVirtualApiName(voVirtualApi.getName());
-            virtualApi.setCreatedDate(LocalDateTime.now());
-            virtualApi.setProject(project);
-            virtualApi.setCreatedBy(userToken);
-            virtualApi.setVirtualApiPath(voVirtualApi.getPath());
-            virtualApi.setRequestMethod(voVirtualApi.getRequestMethod());
-            List<VirtualApiSpecs> virtualApiSpecsList = new LinkedList<>();
-            voVirtualApi.getVoVirtualApiSpecList().stream().forEach(voVirtualApiSpec -> {
-                VirtualApiSpecs virtualApiSpecs = new VirtualApiSpecs();
-                virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getResponsePayload());
-                virtualApiSpecs.setRequestPayload(voVirtualApiSpec.getRequestPayLoad());
-                virtualApiSpecs.setCreatedDate(LocalDateTime.now());
-                virtualApiSpecs.setVirtualApi(virtualApi);
-                virtualApiSpecs.setResponseCode(voVirtualApiSpec.getReponseStatusCode());
-                virtualApiSpecsList.add(virtualApiSpecs);
-
-            });
-            virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
-            virtualApiList.add(virtualApi);
-            organizationRepository.save(organization);
-
+        if (Objects.nonNull(organization)) {
+            Project project = projectService.getProjectByOrganizationAndId(organization, projId);
+            if (Objects.nonNull(project)) {
+                return virtualApiService.createApi(userToken, project, voVirtualApi);
+            } else
+                throw new ProjectNotExistException(String.valueOf(projId));
+        } else {
+            throw new OrganizationNotExistException(String.valueOf(orgId));
         }
-        return null;
     }
-
-
 }

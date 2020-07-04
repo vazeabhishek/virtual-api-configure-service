@@ -1,6 +1,7 @@
 package com.invicto.vaconfigureservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
@@ -34,8 +35,9 @@ public class VirtualApiServiceImpl implements VirtualApiService {
     private final String SUCCESS = "success";
 
     @Override
-    public ResponseEntity<String> createApi(String user, VoVirtualApi voVirtualApi) {
+    public ResponseEntity<String> createApi(String user, Project project, VoVirtualApi voVirtualApi) {
         VirtualApi virtualApi = new VirtualApi();
+        virtualApi.setProject(project);
         virtualApi.setCreatedBy(user);
         virtualApi.setCreatedDate(LocalDateTime.now());
         virtualApi.setVirtualApiName(voVirtualApi.getName());
@@ -47,6 +49,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
             virtualApiSpecs.setCreatedDate(LocalDateTime.now());
             virtualApiSpecs.setRequestPayload(voVirtualApiSpec.getRequestPayLoad());
             virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getResponsePayload());
+            virtualApiSpecs.setVirtualApi(virtualApi);
             virtualApiSpecsList.add(virtualApiSpecs);
         });
         virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
