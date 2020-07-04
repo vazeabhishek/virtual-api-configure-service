@@ -1,9 +1,12 @@
 package com.invicto.vaconfigureservice.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.repository.ProjectRepository;
+import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,9 @@ class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public Project createProject(String userToken, VoProject voProject, Organization organization) {
@@ -37,9 +43,10 @@ class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
             projectRepository.delete(project);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            GenericResponse genericResponse = new GenericResponse("SUCCESS", String.valueOf(projectId));
+            return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
+        } else
+            throw new ProjectNotExistException();
     }
 
     @Override
@@ -50,6 +57,11 @@ class ProjectServiceImpl implements ProjectService {
     @Override
     public Project getProjectByOrganizationAndId(Organization organization, Long id) {
         return projectRepository.findByOrganizationAndProjectId(organization, id);
+    }
+
+    @Override
+    public Project findProjectByIdAndOrganization(Long projectId, Organization organization) {
+        return projectRepository.findByOrganizationAndProjectId(organization, projectId);
     }
 
 }

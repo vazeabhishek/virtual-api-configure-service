@@ -1,13 +1,20 @@
 package com.invicto.vaconfigureservice.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
+import com.invicto.vaconfigureservice.exception.JsonConversionFailureException;
+import com.invicto.vaconfigureservice.exception.NoPermissionException;
+import com.invicto.vaconfigureservice.exception.OrganizationNotExistException;
+import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
 import com.invicto.vaconfigureservice.model.VoOrganization;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.OrganizationRepository;
+import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.OrganizationService;
 import com.invicto.vaconfigureservice.service.ProjectService;
 import com.invicto.vaconfigureservice.service.VirtualApiService;
@@ -18,10 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
@@ -34,6 +38,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private VirtualApiService virtualApiService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public ResponseEntity<String> createOrganization(String userToken, VoOrganization voOrganization) {
@@ -51,8 +58,16 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public ResponseEntity<String> deleteOrganization(String userToken, Long orgId) {
         Organization organization = organizationRepository.findByOrgId(orgId);
-        organizationRepository.delete(organization);
-        return null;
+        if (Objects.isNull(organization))
+            throw new OrganizationNotExistException();
+        else {
+            if (organization.getCreatedBy().contentEquals(userToken))
+                organizationRepository.delete(organization);
+            else
+                throw new NoPermissionException();
+        }
+        GenericResponse genericResponse = new GenericResponse("Success", String.valueOf(orgId));
+        return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
     }
 
     @Override
@@ -66,18 +81,25 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = organizationRepository.findByOrgId(orgId);
         if (Objects.nonNull(organization)) {
             Project project = projectService.createProject(userToken, voProject, organization);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            GenericResponse genericResponse = new GenericResponse("SUCCESS", String.valueOf(project.getProjectId()));
+            return new ResponseEntity<String>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
+        } else {
+            throw new OrganizationNotExistException();
         }
-        return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @Override
     public ResponseEntity<String> removeProject(String userToken, Long orgId, Long projId) {
         Organization organization = organizationRepository.findByOrgId(orgId);
         if (Objects.nonNull(organization)) {
-            return projectService.deleteProject(projId);
+            Project project = projectService.getProjectByOrganizationAndId(organization, projId);
+            if (Objects.nonNull(project))
+                return projectService.deleteProject(project.getProjectId());
+            else
+                throw new ProjectNotExistException();
+        } else {
+            throw new OrganizationNotExistException();
         }
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Override
@@ -113,8 +135,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                 Optional<VirtualApi> virtualApi = virtualApiList.stream().filter(vApi ->
                         vApi.getVirtualApiId().compareTo(ApiId) == 0
                 ).findFirst();
-                if(virtualApi.isPresent())
-                    return new ResponseEntity<>(virtualApi.get(),HttpStatus.OK);
+                if (virtualApi.isPresent())
+                    return new ResponseEntity<>(virtualApi.get(), HttpStatus.OK);
             }
 
         }

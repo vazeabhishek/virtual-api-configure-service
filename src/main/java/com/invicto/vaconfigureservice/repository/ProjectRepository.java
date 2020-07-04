@@ -18,5 +18,8 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
 
     List<Project> findByOrganization(Organization organization);
 
-    Project findByOrganizationAndProjectId(Organization organization,Long id);
+    Project findByProjectIdAndOrganization(Long projectId, Organization organization);
+
+    Project findByOrganizationAndProjectId(Organization organization, Long id);
+
 }

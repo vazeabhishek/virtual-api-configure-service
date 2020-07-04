@@ -1,0 +1,25 @@
+package com.invicto.vaconfigureservice.response;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.invicto.vaconfigureservice.exception.JsonConversionFailureException;
+import lombok.Data;
+
+@Data
+public class GenericResponse {
+    private String message;
+    private String identifier;
+
+    public GenericResponse(String message, String identifier) {
+        this.message = message;
+        this.identifier = identifier;
+    }
+
+    public String toJsonString(ObjectMapper mapper) {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new JsonConversionFailureException();
+        }
+    }
+}
