@@ -46,7 +46,7 @@ class ProjectServiceImpl implements ProjectService {
             GenericResponse genericResponse = new GenericResponse("SUCCESS", String.valueOf(projectId));
             return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
         } else
-            throw new ProjectNotExistException();
+            throw new ProjectNotExistException(String.valueOf(projectId));
     }
 
     @Override

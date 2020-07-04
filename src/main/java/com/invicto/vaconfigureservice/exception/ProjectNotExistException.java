@@ -1,6 +1,13 @@
 package com.invicto.vaconfigureservice.exception;
 
-import org.aspectj.weaver.ast.Not;
 
 public class ProjectNotExistException extends NotExistException {
+
+    private static final String MESSAGE = "Project does not exist";
+
+    public ProjectNotExistException(String identifier) {
+        super(MESSAGE, identifier);
+
+    }
+
 }

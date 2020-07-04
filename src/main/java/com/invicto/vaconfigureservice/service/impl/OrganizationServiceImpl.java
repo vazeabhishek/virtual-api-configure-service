@@ -1,12 +1,10 @@
 package com.invicto.vaconfigureservice.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
-import com.invicto.vaconfigureservice.exception.JsonConversionFailureException;
 import com.invicto.vaconfigureservice.exception.NoPermissionException;
 import com.invicto.vaconfigureservice.exception.OrganizationNotExistException;
 import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
@@ -42,6 +40,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private final String MSG_SUCCESS = "Success";
+
     @Override
     public ResponseEntity<String> createOrganization(String userToken, VoOrganization voOrganization) {
         Organization organization = new Organization();
@@ -52,28 +52,29 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setActive(true);
         organization.setOrgToken(TokenGenrator.randomTokenGenrator());
         organizationRepository.save(organization);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(organization.getOrgId()));
+        return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<String> deleteOrganization(String userToken, Long orgId) {
         Organization organization = organizationRepository.findByOrgId(orgId);
         if (Objects.isNull(organization))
-            throw new OrganizationNotExistException();
+            throw new OrganizationNotExistException(String.valueOf(orgId));
         else {
             if (organization.getCreatedBy().contentEquals(userToken))
                 organizationRepository.delete(organization);
             else
                 throw new NoPermissionException();
         }
-        GenericResponse genericResponse = new GenericResponse("Success", String.valueOf(orgId));
+        GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(orgId));
         return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
     }
 
     @Override
     public ResponseEntity<List<Organization>> findAllOrgnizationByUser(String userToken) {
         List<Organization> organizationList = organizationRepository.findByOrgOwnerUserTokenLike(userToken);
-        return new ResponseEntity<List<Organization>>(organizationList, HttpStatus.OK);
+        return new ResponseEntity<>(organizationList, HttpStatus.OK);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             GenericResponse genericResponse = new GenericResponse("SUCCESS", String.valueOf(project.getProjectId()));
             return new ResponseEntity<String>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
         } else {
-            throw new OrganizationNotExistException();
+            throw new OrganizationNotExistException(String.valueOf(orgId));
         }
     }
 
@@ -96,9 +97,9 @@ public class OrganizationServiceImpl implements OrganizationService {
             if (Objects.nonNull(project))
                 return projectService.deleteProject(project.getProjectId());
             else
-                throw new ProjectNotExistException();
+                throw new ProjectNotExistException(String.valueOf(projId));
         } else {
-            throw new OrganizationNotExistException();
+            throw new OrganizationNotExistException(String.valueOf(orgId));
         }
     }
 
