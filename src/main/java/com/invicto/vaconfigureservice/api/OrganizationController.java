@@ -31,8 +31,7 @@ public class OrganizationController {
 
     @PostMapping("orgs/{orgId}/projects/{projId}/apis")
     public ResponseEntity<String> createApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @RequestBody VoVirtualApi voVirtualApi) {
-        organizationService.createApi(userToken, orgId, projId, voVirtualApi);
-        return null;
+        return organizationService.createApi(userToken, orgId, projId, voVirtualApi);
     }
 
     @DeleteMapping("orgs/{orgId}")
@@ -46,8 +45,8 @@ public class OrganizationController {
     }
 
     @DeleteMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
-    public ResponseEntity<String> deleteById(@RequestHeader(name = "user") String userToken, @RequestBody VoOrganization voOrganization) {
-        return null;
+    public ResponseEntity<String> deleteById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
+        return organizationService.deleteApiById(userToken, orgId, projId, apiId);
     }
 
     @GetMapping("orgs")

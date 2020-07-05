@@ -57,7 +57,6 @@ public class VirtualApiServiceImpl implements VirtualApiService {
         virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
         virtualApiRepository.save(virtualApi);
         GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(virtualApi.getVirtualApiId()));
-        genericResponse.setIdentifier(String.valueOf(virtualApi.getVirtualApiId()));
         return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
     }
 

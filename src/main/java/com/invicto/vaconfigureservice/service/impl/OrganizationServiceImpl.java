@@ -157,4 +157,17 @@ public class OrganizationServiceImpl implements OrganizationService {
             throw new OrganizationNotExistException(String.valueOf(orgId));
         }
     }
+
+    @Override
+    public ResponseEntity<String> deleteApiById(String userToken, Long orgId, Long projId, Long apiId) {
+        Organization organization = organizationRepository.findByOrgId(orgId);
+        if (Objects.nonNull(organization)) {
+            Project project = projectService.getProjectByOrganizationAndId(organization, projId);
+            if (Objects.nonNull(project)) {
+                return virtualApiService.deleteApi(userToken,apiId);
+            } else
+                throw new ProjectNotExistException(String.valueOf(projId));
+        } else
+            throw new OrganizationNotExistException(String.valueOf(orgId));
+    }
 }
