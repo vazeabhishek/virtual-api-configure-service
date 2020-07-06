@@ -21,7 +21,16 @@ import java.util.List;
 public class VirtualApi {
     @Id
     @Column(name = "VIRTUAL_API_ID")
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(generator = "api-sequence-generator")
+    @GenericGenerator(
+            name = "api-sequence-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "api_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+            }
+    )
     private Long virtualApiId;
     @Column(name = "VIRTUAL_API_NAME")
     private String virtualApiName;
