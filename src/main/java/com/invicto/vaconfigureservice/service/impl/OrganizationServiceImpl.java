@@ -5,6 +5,7 @@ import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
+import com.invicto.vaconfigureservice.exception.ApiNotExistException;
 import com.invicto.vaconfigureservice.exception.NoPermissionException;
 import com.invicto.vaconfigureservice.exception.OrganizationNotExistException;
 import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
@@ -82,7 +83,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = organizationRepository.findByOrgId(orgId);
         if (Objects.nonNull(organization)) {
             Project project = projectService.createProject(userToken, voProject, organization);
-            GenericResponse genericResponse = new GenericResponse("SUCCESS", String.valueOf(project.getProjectId()));
+            GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(project.getProjectId()));
             return new ResponseEntity<String>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
         } else {
             throw new OrganizationNotExistException(String.valueOf(orgId));
@@ -138,10 +139,13 @@ public class OrganizationServiceImpl implements OrganizationService {
                 ).findFirst();
                 if (virtualApi.isPresent())
                     return new ResponseEntity<>(virtualApi.get(), HttpStatus.OK);
-            }
+                else
+                    throw new ApiNotExistException(String.valueOf(ApiId));
+            } else
+                throw new ProjectNotExistException(String.valueOf(projId));
 
-        }
-        return null;
+        } else
+            throw new OrganizationNotExistException(String.valueOf(orgId));
     }
 
     @Override
@@ -164,7 +168,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (Objects.nonNull(organization)) {
             Project project = projectService.getProjectByOrganizationAndId(organization, projId);
             if (Objects.nonNull(project)) {
-                return virtualApiService.deleteApi(userToken,apiId);
+                return virtualApiService.deleteApi(userToken, apiId);
             } else
                 throw new ProjectNotExistException(String.valueOf(projId));
         } else
