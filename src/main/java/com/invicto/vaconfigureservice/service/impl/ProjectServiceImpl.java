@@ -3,6 +3,7 @@ package com.invicto.vaconfigureservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.exception.NoPermissionException;
 import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.repository.ProjectRepository;
@@ -62,8 +63,15 @@ class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project findProjectByIdAndOrganization(Long projectId, Organization organization) {
-        return projectRepository.findByOrganizationAndProjectId(organization, projectId);
+    public Project findProjectByIdAndOrganization(String userToken, Long projectId, Organization organization) {
+        Project project = projectRepository.findByOrganizationAndProjectId(organization, projectId);
+        if (Objects.nonNull(project)) {
+            if (project.getProjOwnerUserToken().contentEquals(userToken)) {
+                return project;
+            } else
+                throw new NoPermissionException();
+        } else
+            throw new ProjectNotExistException(String.valueOf(projectId));
     }
 
 }

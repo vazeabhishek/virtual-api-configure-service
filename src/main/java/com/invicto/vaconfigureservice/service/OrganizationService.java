@@ -26,6 +26,8 @@ public interface OrganizationService {
 
     public ResponseEntity<List<Project>> getAllProjects(Long orgId);
 
+    public ResponseEntity<Project> getProjectById(String userToken,Long orgId, Long projId);
+
     public ResponseEntity<List<VirtualApi>> getAllApis(Long orgId, Long projId);
 
     public ResponseEntity<VirtualApi> getApisById(Long orgId, Long projId, Long ApiId);

@@ -81,13 +81,12 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public ResponseEntity<Organization> findByOrganizationId(String userToken, Long orgId) {
         Organization organization = organizationRepository.findByOrgId(orgId);
-        if(Objects.nonNull(organization)){
-            if(organization.getOrgOwnerUserToken().contentEquals(userToken))
+        if (Objects.nonNull(organization)) {
+            if (organization.getOrgOwnerUserToken().contentEquals(userToken))
                 return new ResponseEntity<>(organization, HttpStatus.OK);
             else
                 throw new NoPermissionException();
-        }
-        else
+        } else
             throw new OrganizationNotExistException(String.valueOf(orgId));
     }
 
@@ -125,6 +124,21 @@ public class OrganizationServiceImpl implements OrganizationService {
             return new ResponseEntity<List<Project>>(projects, HttpStatus.OK);
         } else
             throw new OrganizationNotExistException(String.valueOf(orgId));
+    }
+
+    @Override
+    public ResponseEntity<Project> getProjectById(String userToken, Long orgId, Long projId) {
+        Organization organization = organizationRepository.findByOrgId(orgId);
+        if (Objects.isNull(organization))
+            throw new OrganizationNotExistException(String.valueOf(orgId));
+        else {
+            if (organization.getCreatedBy().contentEquals(userToken)) {
+                Project project = projectService.findProjectByIdAndOrganization(userToken, projId, organization);
+                ResponseEntity<Project> responseEntity = new ResponseEntity<>(project, HttpStatus.OK);
+                return responseEntity;
+            } else
+                throw new NoPermissionException();
+        }
     }
 
     @Override

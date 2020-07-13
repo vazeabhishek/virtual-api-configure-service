@@ -64,6 +64,11 @@ public class OrganizationController {
         return organizationService.getAllProjects(orgId);
     }
 
+    @GetMapping("orgs/{orgId}/projects/{projId}")
+    public ResponseEntity<Project> getProjectsById(@PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
+        return organizationService.getProjectById(orgId, projId);
+    }
+
     @GetMapping("orgs/{orgId}/projects/{projId}/apis")
     public ResponseEntity<List<VirtualApi>> getApis(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
         return organizationService.getAllApis(orgId, projId);
