@@ -19,7 +19,7 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
-    @PostMapping("orgs/")
+    @PostMapping("orgs")
     public ResponseEntity<String> createOrganization(@RequestHeader(name = "user") String userToken, @RequestBody VoOrganization voOrganization) {
         return organizationService.createOrganization(userToken, voOrganization);
     }
@@ -52,6 +52,11 @@ public class OrganizationController {
     @GetMapping("orgs")
     public ResponseEntity<List<Organization>> getOrganization(@RequestHeader(name = "user") String userToken) {
         return organizationService.findAllOrgnizationByUser(userToken);
+    }
+
+    @GetMapping("orgs/{orgId}")
+    public ResponseEntity<Organization> getOrganizationDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
+        return organizationService.findByOrganizationId(userToken, orgId);
     }
 
     @GetMapping("orgs/{orgId}/projects")

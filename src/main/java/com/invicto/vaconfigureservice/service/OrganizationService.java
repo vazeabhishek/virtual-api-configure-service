@@ -18,6 +18,8 @@ public interface OrganizationService {
 
     public ResponseEntity<List<Organization>> findAllOrgnizationByUser(String userToken);
 
+    public ResponseEntity<Organization> findByOrganizationId(String userToken, Long orgId);
+
     public ResponseEntity<String> addProject(String userToken, Long orgId, VoProject voProject);
 
     public ResponseEntity<String> removeProject(String userToken, Long orgId, Long projId);

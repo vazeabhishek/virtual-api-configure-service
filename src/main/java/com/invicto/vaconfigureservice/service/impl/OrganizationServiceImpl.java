@@ -79,6 +79,19 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public ResponseEntity<Organization> findByOrganizationId(String userToken, Long orgId) {
+        Organization organization = organizationRepository.findByOrgId(orgId);
+        if(Objects.nonNull(organization)){
+            if(organization.getOrgOwnerUserToken().contentEquals(userToken))
+                return new ResponseEntity<>(organization, HttpStatus.OK);
+            else
+                throw new NoPermissionException();
+        }
+        else
+            throw new OrganizationNotExistException(String.valueOf(orgId));
+    }
+
+    @Override
     public ResponseEntity<String> addProject(String userToken, Long orgId, VoProject voProject) {
         Organization organization = organizationRepository.findByOrgId(orgId);
         if (Objects.nonNull(organization)) {
