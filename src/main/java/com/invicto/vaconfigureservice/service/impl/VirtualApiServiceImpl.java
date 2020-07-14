@@ -49,8 +49,8 @@ public class VirtualApiServiceImpl implements VirtualApiService {
             VirtualApiSpecs virtualApiSpecs = new VirtualApiSpecs();
             virtualApiSpecs.setCreatedBy(user);
             virtualApiSpecs.setCreatedDate(LocalDateTime.now());
-            virtualApiSpecs.setRequestPayload(voVirtualApiSpec.getRequestPayLoad());
-            virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getResponsePayload());
+            virtualApiSpecs.setRequestPayload(voVirtualApiSpec.getReqPayload());
+            virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getRespPayload());
             virtualApiSpecs.setVirtualApi(virtualApi);
             virtualApiSpecsList.add(virtualApiSpecs);
         });
