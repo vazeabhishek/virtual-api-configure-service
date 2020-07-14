@@ -6,8 +6,8 @@ import java.util.List;
 
 @Data
 public class VoVirtualApi {
-    private String name;
-    private String requestMethod;
+    private String apiName;
+    private String method;
     private String path;
-    List<VoVirtualApiSpec> voVirtualApiSpecList;
+    private List<VoVirtualApiSpec> voVirtualApiSpecList;
 }
