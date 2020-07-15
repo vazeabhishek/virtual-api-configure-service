@@ -51,7 +51,7 @@ public class OrganizationController {
 
     @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}/toggle")
     public ResponseEntity<String> toggleApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
-        return organizationService.deleteApiById(userToken, orgId, projId, apiId);
+        return organizationService.toggleApi(userToken, orgId, projId, apiId);
     }
 
     @GetMapping("orgs")
@@ -83,7 +83,5 @@ public class OrganizationController {
     public ResponseEntity<VirtualApi> getApisById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
         return organizationService.getApisById(orgId, projId, apiId);
     }
-
-
 
 }
