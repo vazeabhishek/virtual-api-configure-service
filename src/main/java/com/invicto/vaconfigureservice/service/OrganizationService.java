@@ -35,4 +35,6 @@ public interface OrganizationService {
     public ResponseEntity<String> createApi(String userToken, Long orgId, Long projId, VoVirtualApi voVirtualApi);
 
     public ResponseEntity<String> deleteApiById(String userToken, Long orgId, Long projId, Long apiId);
+
+    public ResponseEntity<String> toggleApi(String userToken, Long orgId, Long projId, Long apiId);
 }

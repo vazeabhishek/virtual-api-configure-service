@@ -48,20 +48,24 @@ public class VirtualApi {
     private String createdBy;
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Column
+    @Column(name = "IS_ACTIVE")
     private boolean status;
+    @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<VirtualApiSpecs> virtualApiSpecs;
 
     @Override
     public String toString() {
         return "VirtualApi{" +
-                "virtualApiId='" + virtualApiId + '\'' +
+                "virtualApiId=" + virtualApiId +
                 ", virtualApiName='" + virtualApiName + '\'' +
                 ", virtualApiPath='" + virtualApiPath + '\'' +
                 ", requestMethod='" + requestMethod + '\'' +
+                ", availableAt='" + availableAt + '\'' +
+                ", project=" + project +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdDate=" + createdDate +
+                ", status=" + status +
                 '}';
     }
+
 }

@@ -74,6 +74,22 @@ public class VirtualApiServiceImpl implements VirtualApiService {
     }
 
     @Override
+    public ResponseEntity<String> toggleApi(String user, Long apiId) {
+        VirtualApi virtualApi = virtualApiRepository.findByVirtualApiId(apiId);
+        if (Objects.nonNull(virtualApi)) {
+            if (virtualApi.isStatus())
+                virtualApi.setStatus(false);
+            else
+                virtualApi.setStatus(true);
+            virtualApiRepository.save(virtualApi);
+            GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(apiId));
+            return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
+        } else {
+            throw new ApiNotExistException(String.valueOf(apiId));
+        }
+    }
+
+    @Override
     public List<VirtualApi> getAllApisFromProject(Project project) {
         return virtualApiRepository.findByProject(project);
     }
