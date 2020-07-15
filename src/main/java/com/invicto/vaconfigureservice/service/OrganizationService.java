@@ -4,6 +4,7 @@ import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.model.VoOrganization;
+import com.invicto.vaconfigureservice.model.VoOrganizationProject;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ public interface OrganizationService {
     public ResponseEntity<Project> getProjectById(String userToken,Long orgId, Long projId);
 
     public ResponseEntity<List<VirtualApi>> getAllApis(Long orgId, Long projId);
+
+    public ResponseEntity<List<VirtualApi>> getAllApis(VoOrganizationProject voOrganizationProject);
 
     public ResponseEntity<VirtualApi> getApisById(Long orgId, Long projId, Long ApiId);
 

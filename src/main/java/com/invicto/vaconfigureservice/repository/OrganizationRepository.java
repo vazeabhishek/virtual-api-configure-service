@@ -11,7 +11,7 @@ public interface OrganizationRepository extends CrudRepository<Organization, Lon
 
     Organization findByOrgId(Long id);
 
-    List<Organization> findByOrgName(String orgName);
+    Organization findByOrgName(String orgName);
 
     List<Organization> findByOrgOwnerUserTokenLike(String token);
 

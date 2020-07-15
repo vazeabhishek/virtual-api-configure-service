@@ -34,7 +34,7 @@ class ProjectServiceImpl implements ProjectService {
         Project project = new Project();
         project.setActive(true);
         project.setCreatedBy(userToken);
-        project.setProjectName(voProject.getProjectName());
+        project.setProjectName(voProject.getProjectName().toUpperCase());
         project.setProjOwnerUserToken(userToken);
         project.setCreatedDate(LocalDateTime.now());
         project.setOrganization(organization);
@@ -72,6 +72,15 @@ class ProjectServiceImpl implements ProjectService {
                 throw new NoPermissionException();
         } else
             throw new ProjectNotExistException(String.valueOf(projectId));
+    }
+
+    @Override
+    public Project findProjectByNameAndOrganization(String projName, Organization organization) {
+        Project project = projectRepository.findByProjectNameAndOrganization(projName,organization);
+        if(Objects.nonNull(project))
+            return project;
+        else
+            throw new ProjectNotExistException(projName);
     }
 
 }

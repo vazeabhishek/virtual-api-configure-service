@@ -13,4 +13,5 @@ public interface ProjectService {
     public List<Project> getProjectsByOrganization(Organization organization);
     public Project getProjectByOrganizationAndId(Organization organization, Long id);
     public Project findProjectByIdAndOrganization(String userToken,Long projectId, Organization orgId);
+    public Project findProjectByNameAndOrganization(String projName, Organization organization);
 }

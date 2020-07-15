@@ -10,6 +10,7 @@ import com.invicto.vaconfigureservice.exception.NoPermissionException;
 import com.invicto.vaconfigureservice.exception.OrganizationNotExistException;
 import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
 import com.invicto.vaconfigureservice.model.VoOrganization;
+import com.invicto.vaconfigureservice.model.VoOrganizationProject;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.OrganizationRepository;
@@ -49,7 +50,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setOrgOwnerUserToken(userToken);
         organization.setCreatedBy(userToken);
         organization.setCreatedDate(LocalDateTime.now());
-        organization.setOrgName(voOrganization.getOrganizationName());
+        organization.setOrgName(voOrganization.getOrganizationName().toUpperCase());
         organization.setActive(true);
         organization.setOrgToken(TokenGenrator.randomTokenGenrator());
         organizationRepository.save(organization);
@@ -152,6 +153,17 @@ public class OrganizationServiceImpl implements OrganizationService {
             }
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<List<VirtualApi>> getAllApis(VoOrganizationProject voOrganizationProject) {
+        Organization organization = organizationRepository.findByOrgName(voOrganizationProject.getOrganizationName().toUpperCase());
+        if (Objects.nonNull(organization)) {
+            Project project = projectService.findProjectByNameAndOrganization(voOrganizationProject.getProjectName().toUpperCase(), organization);
+            List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(project);
+            return new ResponseEntity<>(virtualApiList, HttpStatus.OK);
+        } else
+            throw new OrganizationNotExistException(voOrganizationProject.getOrganizationName());
     }
 
     @Override
