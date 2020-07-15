@@ -4,6 +4,7 @@ import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.model.VoOrganization;
+import com.invicto.vaconfigureservice.model.VoOrganizationProject;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.service.OrganizationService;
@@ -77,6 +78,11 @@ public class OrganizationController {
     @GetMapping("orgs/{orgId}/projects/{projId}/apis")
     public ResponseEntity<List<VirtualApi>> getApis(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
         return organizationService.getAllApis(orgId, projId);
+    }
+
+    @PostMapping("/filter/apis")
+    public ResponseEntity<List<VirtualApi>> filterApis(@RequestBody VoOrganizationProject voOrganizationProject) {
+        return organizationService.getAllApis(voOrganizationProject);
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
