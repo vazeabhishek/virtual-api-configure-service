@@ -44,6 +44,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
         virtualApi.setVirtualApiPath(voVirtualApi.getPath());
         virtualApi.setRequestMethod(voVirtualApi.getMethod());
         virtualApi.setAvailableAt(buildHostPath(project, voVirtualApi.getPath()));
+        virtualApi.setStatus(true);
         List<VirtualApiSpecs> virtualApiSpecsList = new ArrayList<>();
         voVirtualApi.getVoVirtualApiSpecList().stream().forEach(voVirtualApiSpec -> {
             VirtualApiSpecs virtualApiSpecs = new VirtualApiSpecs();

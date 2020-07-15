@@ -49,7 +49,8 @@ public class VirtualApi {
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-
+    @Column
+    private boolean status;
     private List<VirtualApiSpecs> virtualApiSpecs;
 
     @Override
