@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "VIRTUAL_API",
         indexes = {@Index(name = "primary_index", columnList = "VIRTUAL_API_ID", unique = true)},
         uniqueConstraints =
-        @UniqueConstraint(columnNames = {"REQUEST_METHOD","VIRTUAL_API_PATH", "PROJECT_ID"}))
+        @UniqueConstraint(columnNames = {"REQUEST_METHOD", "VIRTUAL_API_PATH", "PROJECT_ID"}))
 public class VirtualApi {
     @Id
     @Column(name = "VIRTUAL_API_ID")
@@ -38,6 +38,8 @@ public class VirtualApi {
     private String virtualApiPath;
     @Column(name = "REQUEST_METHOD")
     private String requestMethod;
+    @Column(name = "AVAILABLE_AT")
+    private String availableAt;
     @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "PROJECT_ID")
     @JsonIgnore
@@ -46,7 +48,7 @@ public class VirtualApi {
     private String createdBy;
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "virtualApi", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 
     private List<VirtualApiSpecs> virtualApiSpecs;
 

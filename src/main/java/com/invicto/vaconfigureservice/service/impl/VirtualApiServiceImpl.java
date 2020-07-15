@@ -43,6 +43,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
         virtualApi.setVirtualApiName(voVirtualApi.getApiName());
         virtualApi.setVirtualApiPath(voVirtualApi.getPath());
         virtualApi.setRequestMethod(voVirtualApi.getMethod());
+        virtualApi.setAvailableAt(buildHostPath(project, voVirtualApi.getPath()));
         List<VirtualApiSpecs> virtualApiSpecsList = new ArrayList<>();
         voVirtualApi.getVoVirtualApiSpecList().stream().forEach(voVirtualApiSpec -> {
             VirtualApiSpecs virtualApiSpecs = new VirtualApiSpecs();
@@ -84,5 +85,13 @@ public class VirtualApiServiceImpl implements VirtualApiService {
     @Override
     public VirtualApi fetchApiByProjectAndId(Project project, Long id) {
         return virtualApiRepository.findByProjectAndVirtualApiId(project, id);
+    }
+
+    private String buildHostPath(Project project, String apiPath) {
+        String serverUrl = "http://localhost:8084";
+        if (!apiPath.startsWith("/"))
+            apiPath = "/" + apiPath;
+        String apiUrl = serverUrl + "/" + project.getOrganization().getOrgName().trim().toLowerCase() + "/" + project.getProjectName().trim().toLowerCase() + "" + apiPath;
+        return apiUrl;
     }
 }
