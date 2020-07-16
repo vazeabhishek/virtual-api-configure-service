@@ -82,6 +82,7 @@ public class OrganizationController {
 
     @PostMapping("/filter/apis")
     public ResponseEntity<List<VirtualApi>> filterApis(@RequestBody VoOrganizationProject voOrganizationProject) {
+        System.out.println("Request Recieved");
         return organizationService.getAllApis(voOrganizationProject);
     }
 

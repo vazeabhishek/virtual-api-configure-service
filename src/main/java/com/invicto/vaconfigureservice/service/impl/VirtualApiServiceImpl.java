@@ -50,7 +50,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
             VirtualApiSpecs virtualApiSpecs = new VirtualApiSpecs();
             virtualApiSpecs.setCreatedBy(user);
             virtualApiSpecs.setCreatedDate(LocalDateTime.now());
-            virtualApiSpecs.setRequestPayload(voVirtualApiSpec.getReqPayload());
+            virtualApiSpecs.setRequestPayload(removeUnnecessaryChracters(voVirtualApiSpec.getReqPayload()));
             virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getRespPayload());
             virtualApiSpecs.setResponseCode(voVirtualApiSpec.getHttpStatus());
             virtualApiSpecs.setVirtualApi(virtualApi);
@@ -102,7 +102,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public VirtualApi fetchApiByProjectAndId(Project project, Long id) {
-        return virtualApiRepository.findByProjectAndVirtualApiId(project, id);
+        return virtualApiRepository.findByProjectAndVirtualApiIdAndStatus(project, id,true);
     }
 
     private String buildHostPath(Project project, String apiPath) {
@@ -111,5 +111,8 @@ public class VirtualApiServiceImpl implements VirtualApiService {
             apiPath = "/" + apiPath;
         String apiUrl = serverUrl + "/" + project.getOrganization().getOrgName().trim().toLowerCase() + "/" + project.getProjectName().trim().toLowerCase() + "" + apiPath;
         return apiUrl;
+    }
+    private String removeUnnecessaryChracters(String s){
+        return s.replaceAll("\\s+","");
     }
 }
