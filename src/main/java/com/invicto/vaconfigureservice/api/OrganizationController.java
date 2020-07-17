@@ -91,7 +91,7 @@ public class OrganizationController {
         return organizationService.findByOrganizationName(voOrganization.getOrganizationName());
     }
 
-    @PostMapping("/filter/{orgId}")
+    @PostMapping("/filter/{orgId}/projects")
     public ResponseEntity<Project> filterProjectByName(@PathVariable(name = "orgId") Long orgId,@RequestBody VoProject voProject) {
         return organizationService.getProjectByOrganization(orgId,voProject.getProjectName());
     }
