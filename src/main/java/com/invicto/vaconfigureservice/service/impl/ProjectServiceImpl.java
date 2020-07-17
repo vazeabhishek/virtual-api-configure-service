@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.exception.NoPermissionException;
+import com.invicto.vaconfigureservice.exception.ProjectAlreadyExistException;
 import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.repository.ProjectRepository;
@@ -31,14 +32,18 @@ class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project createProject(String userToken, VoProject voProject, Organization organization) {
-        Project project = new Project();
-        project.setActive(true);
-        project.setCreatedBy(userToken);
-        project.setProjectName(voProject.getProjectName().toUpperCase());
-        project.setProjOwnerUserToken(userToken);
-        project.setCreatedDate(LocalDateTime.now());
-        project.setOrganization(organization);
-        return projectRepository.save(project);
+        Project existingProject = projectRepository.findByProjectNameAndOrganization(voProject.getProjectName(), organization);
+        if (Objects.isNull(existingProject)) {
+            Project project = new Project();
+            project.setActive(true);
+            project.setCreatedBy(userToken);
+            project.setProjectName(voProject.getProjectName().toUpperCase());
+            project.setProjOwnerUserToken(userToken);
+            project.setCreatedDate(LocalDateTime.now());
+            project.setOrganization(organization);
+            return projectRepository.save(project);
+        } else
+            throw new ProjectAlreadyExistException(voProject.getProjectName());
     }
 
     @Override
@@ -76,8 +81,8 @@ class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project findProjectByNameAndOrganization(String projName, Organization organization) {
-        Project project = projectRepository.findByProjectNameAndOrganization(projName.toUpperCase(),organization);
-        if(Objects.nonNull(project))
+        Project project = projectRepository.findByProjectNameAndOrganization(projName.toUpperCase(), organization);
+        if (Objects.nonNull(project))
             return project;
         else
             throw new ProjectNotExistException(projName);
