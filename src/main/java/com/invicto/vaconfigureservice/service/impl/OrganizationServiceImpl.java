@@ -104,9 +104,12 @@ public class OrganizationServiceImpl implements OrganizationService {
     public ResponseEntity<String> addProject(String userToken, Long orgId, VoProject voProject) {
         Organization organization = organizationRepository.findByOrgId(orgId);
         if (Objects.nonNull(organization)) {
-            Project project = projectService.createProject(userToken, voProject, organization);
-            GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(project.getProjectId()));
-            return new ResponseEntity<String>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
+            if (organization.getOrgOwnerUserToken().contentEquals(userToken)) {
+                Project project = projectService.createProject(userToken, voProject, organization);
+                GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(project.getProjectId()));
+                return new ResponseEntity<String>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
+            } else
+                throw new NoPermissionException();
         } else {
             throw new OrganizationNotExistException(String.valueOf(orgId));
         }
