@@ -23,6 +23,13 @@ public class Handler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse.toJsonString(objectMapper), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AlreadyExistException.class)
+    public ResponseEntity<Object> handleAlreadyExistException(AlreadyExistException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setDetail(ex.getMessage());
+        return new ResponseEntity<>(errorResponse.toJsonString(objectMapper), HttpStatus.NOT_ACCEPTABLE);
+    }
+
     @ExceptionHandler(NoPermissionException.class)
     public ResponseEntity<Object> handleNoPermissionException(NoPermissionException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -36,7 +43,9 @@ public class Handler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleUnAnticipatedException(JsonConversionFailureException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Object> handleUnAnticipatedException(Exception ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setDetail(ex.getMessage());
+        return new ResponseEntity<>(errorResponse.toJsonString(objectMapper), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

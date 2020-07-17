@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
-import com.invicto.vaconfigureservice.exception.ApiNotExistException;
-import com.invicto.vaconfigureservice.exception.NoPermissionException;
-import com.invicto.vaconfigureservice.exception.OrganizationNotExistException;
-import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
+import com.invicto.vaconfigureservice.exception.*;
 import com.invicto.vaconfigureservice.model.VoOrganization;
 import com.invicto.vaconfigureservice.model.VoOrganizationProject;
 import com.invicto.vaconfigureservice.model.VoProject;
@@ -45,16 +42,23 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public ResponseEntity<String> createOrganization(String userToken, VoOrganization voOrganization) {
-        Organization organization = new Organization();
-        organization.setOrgOwnerUserToken(userToken);
-        organization.setCreatedBy(userToken);
-        organization.setCreatedDate(LocalDateTime.now());
-        organization.setOrgName(voOrganization.getOrganizationName().toUpperCase());
-        organization.setActive(true);
-        organization.setOrgToken(TokenGenrator.randomTokenGenrator());
-        organizationRepository.save(organization);
-        GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(organization.getOrgId()));
-        return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
+        Organization existingOrg = organizationRepository.findByOrgName(voOrganization.getOrganizationName().toUpperCase());
+        if (Objects.isNull(existingOrg)) {
+            Organization organization = new Organization();
+            organization.setOrgOwnerUserToken(userToken);
+            organization.setCreatedBy(userToken);
+            organization.setCreatedDate(LocalDateTime.now());
+            organization.setOrgName(voOrganization.getOrganizationName().toUpperCase());
+            organization.setActive(true);
+            organization.setOrgToken(TokenGenrator.randomTokenGenrator());
+            organizationRepository.save(organization);
+            GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(organization.getOrgId()));
+            return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
+        }
+        else
+        {
+            throw new OrganizationAlreadyExistsException(voOrganization.getOrganizationName());
+        }
     }
 
     @Override
