@@ -16,7 +16,9 @@ import java.util.List;
 @EqualsAndHashCode
 @Table(name = "ORGANIZATION",
         indexes = {@Index(name = "primary_index", columnList = "ORG_ID", unique = true),
-                @Index(name = "secondary_index", columnList = "ORG_NAME", unique = false)})
+                @Index(name = "secondary_index", columnList = "ORG_NAME", unique = false)},
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"ORG_NAME"}))
 public class Organization {
     @Id
     @Column(name = "ORG_ID", nullable = false)
@@ -43,7 +45,7 @@ public class Organization {
     private String createdBy;
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
-    @OneToMany(orphanRemoval = true, targetEntity = Project.class, mappedBy = "organization",cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, targetEntity = Project.class, mappedBy = "organization", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Project> projectList;
 

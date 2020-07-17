@@ -76,7 +76,7 @@ class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project findProjectByNameAndOrganization(String projName, Organization organization) {
-        Project project = projectRepository.findByProjectNameAndOrganization(projName,organization);
+        Project project = projectRepository.findByProjectNameAndOrganization(projName.toUpperCase(),organization);
         if(Objects.nonNull(project))
             return project;
         else

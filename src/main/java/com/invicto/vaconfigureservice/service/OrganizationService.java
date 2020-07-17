@@ -21,11 +21,15 @@ public interface OrganizationService {
 
     public ResponseEntity<Organization> findByOrganizationId(String userToken, Long orgId);
 
+    public ResponseEntity<Organization> findByOrganizationName(String organization);
+
     public ResponseEntity<String> addProject(String userToken, Long orgId, VoProject voProject);
 
     public ResponseEntity<String> removeProject(String userToken, Long orgId, Long projId);
 
     public ResponseEntity<List<Project>> getAllProjects(Long orgId);
+
+    public ResponseEntity<Project> getProjectByOrganization(Long orgId, String projectName);
 
     public ResponseEntity<Project> getProjectById(String userToken,Long orgId, Long projId);
 

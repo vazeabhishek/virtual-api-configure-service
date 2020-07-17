@@ -86,6 +86,16 @@ public class OrganizationController {
         return organizationService.getAllApis(voOrganizationProject);
     }
 
+    @PostMapping("/filter/orgs")
+    public ResponseEntity<Organization> filterOrganization(@RequestBody VoOrganization voOrganization) {
+        return organizationService.findByOrganizationName(voOrganization.getOrganizationName());
+    }
+
+    @PostMapping("/filter/{orgId}")
+    public ResponseEntity<Project> filterProjectByName(@PathVariable(name = "orgId") Long orgId,@RequestBody VoProject voProject) {
+        return organizationService.getProjectByOrganization(orgId,voProject.getProjectName());
+    }
+
     @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
     public ResponseEntity<VirtualApi> getApisById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
         return organizationService.getApisById(orgId, projId, apiId);

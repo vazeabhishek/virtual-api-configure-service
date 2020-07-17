@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
-import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
 import com.invicto.vaconfigureservice.exception.ApiNotExistException;
 import com.invicto.vaconfigureservice.exception.NoPermissionException;
 import com.invicto.vaconfigureservice.exception.OrganizationNotExistException;
@@ -92,6 +91,16 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public ResponseEntity<Organization> findByOrganizationName(String organization) {
+        Organization organizationObj = organizationRepository.findByOrgName(organization.toUpperCase());
+        if (Objects.nonNull(organization)) {
+            return new ResponseEntity<>(organizationObj, HttpStatus.OK);
+        } else
+            throw new OrganizationNotExistException(organization);
+
+    }
+
+    @Override
     public ResponseEntity<String> addProject(String userToken, Long orgId, VoProject voProject) {
         Organization organization = organizationRepository.findByOrgId(orgId);
         if (Objects.nonNull(organization)) {
@@ -125,6 +134,18 @@ public class OrganizationServiceImpl implements OrganizationService {
             return new ResponseEntity<List<Project>>(projects, HttpStatus.OK);
         } else
             throw new OrganizationNotExistException(String.valueOf(orgId));
+    }
+
+    @Override
+    public ResponseEntity<Project> getProjectByOrganization(Long orgId, String projectName) {
+        Organization organization = organizationRepository.findByOrgId(orgId);
+        if (Objects.isNull(organization))
+            throw new OrganizationNotExistException(String.valueOf(orgId));
+        else {
+            Project project = projectService.findProjectByNameAndOrganization(projectName, organization);
+            ResponseEntity<Project> responseEntity = new ResponseEntity<>(project, HttpStatus.OK);
+            return responseEntity;
+        }
     }
 
     @Override
