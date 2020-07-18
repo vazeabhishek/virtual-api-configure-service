@@ -14,6 +14,7 @@ import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.OrganizationService;
 import com.invicto.vaconfigureservice.service.ProjectService;
 import com.invicto.vaconfigureservice.service.VirtualApiService;
+import com.invicto.vaconfigureservice.util.RequestValidator;
 import com.invicto.vaconfigureservice.util.TokenGenrator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public ResponseEntity<String> createOrganization(String userToken, VoOrganization voOrganization) {
+        validateOrgRequest(voOrganization);
         Organization existingOrg = organizationRepository.findByOrgName(voOrganization.getOrganizationName().toUpperCase());
         if (Objects.isNull(existingOrg)) {
             Organization organization = new Organization();
@@ -54,9 +56,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             organizationRepository.save(organization);
             GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(organization.getOrgId()));
             return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
-        }
-        else
-        {
+        } else {
             throw new OrganizationAlreadyExistsException(voOrganization.getOrganizationName());
         }
     }
@@ -253,5 +253,14 @@ public class OrganizationServiceImpl implements OrganizationService {
                 throw new ProjectNotExistException(String.valueOf(projId));
         } else
             throw new OrganizationNotExistException(String.valueOf(orgId));
+    }
+
+    private boolean validateOrgRequest(VoOrganization voOrganization) {
+        boolean status = false;
+        if (RequestValidator.isValidProjectName(voOrganization.getOrganizationName()))
+            status = true;
+        else
+            throw new ApiInvalidRequest("Organization name not valid", voOrganization.getOrganizationName());
+        return status;
     }
 }

@@ -3,13 +3,16 @@ package com.invicto.vaconfigureservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.exception.ApiInvalidRequest;
 import com.invicto.vaconfigureservice.exception.NoPermissionException;
 import com.invicto.vaconfigureservice.exception.ProjectAlreadyExistException;
 import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
 import com.invicto.vaconfigureservice.model.VoProject;
+import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.ProjectRepository;
 import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.ProjectService;
+import com.invicto.vaconfigureservice.util.RequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,7 @@ class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project createProject(String userToken, VoProject voProject, Organization organization) {
+        validateProjectRequest(voProject);
         Project existingProject = projectRepository.findByProjectNameAndOrganization(voProject.getProjectName().toUpperCase(), organization);
         if (Objects.isNull(existingProject)) {
             Project project = new Project();
@@ -86,6 +90,16 @@ class ProjectServiceImpl implements ProjectService {
             return project;
         else
             throw new ProjectNotExistException(projName);
+    }
+
+    private boolean validateProjectRequest(VoProject voProject) {
+        boolean status = false;
+        if (RequestValidator.isValidProjectName(voProject.getProjectName()))
+            status = true;
+        else
+            throw new ApiInvalidRequest("Project name not valid", voProject.getProjectName());
+
+        return status;
     }
 
 }
