@@ -260,7 +260,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (RequestValidator.isValidProjectName(voOrganization.getOrganizationName()))
             status = true;
         else
-            throw new ApiInvalidRequest("Organization name not valid", voOrganization.getOrganizationName());
+            throw new OrgInvalidRequest("Organization name not valid", voOrganization.getOrganizationName());
         return status;
     }
 }

@@ -3,12 +3,8 @@ package com.invicto.vaconfigureservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
-import com.invicto.vaconfigureservice.exception.ApiInvalidRequest;
-import com.invicto.vaconfigureservice.exception.NoPermissionException;
-import com.invicto.vaconfigureservice.exception.ProjectAlreadyExistException;
-import com.invicto.vaconfigureservice.exception.ProjectNotExistException;
+import com.invicto.vaconfigureservice.exception.*;
 import com.invicto.vaconfigureservice.model.VoProject;
-import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.ProjectRepository;
 import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.ProjectService;
@@ -17,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -97,8 +92,7 @@ class ProjectServiceImpl implements ProjectService {
         if (RequestValidator.isValidProjectName(voProject.getProjectName()))
             status = true;
         else
-            throw new ApiInvalidRequest("Project name not valid", voProject.getProjectName());
-
+            throw new ProjectInvalidRequest("Project name not valid", voProject.getProjectName());
         return status;
     }
 
