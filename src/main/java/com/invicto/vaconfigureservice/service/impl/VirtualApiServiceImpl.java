@@ -5,12 +5,14 @@ import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
 import com.invicto.vaconfigureservice.exception.ApiAlreadyExistException;
+import com.invicto.vaconfigureservice.exception.ApiInvalidRequest;
 import com.invicto.vaconfigureservice.exception.ApiNotExistException;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.VirtualApiRepository;
 import com.invicto.vaconfigureservice.repository.VirtualApiSpecsRepository;
 import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.VirtualApiService;
+import com.invicto.vaconfigureservice.util.RequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public ResponseEntity<String> createApi(String user, Project project, VoVirtualApi voVirtualApi) {
+        validateApiRequest(voVirtualApi);
         VirtualApi existingVirtualApi = virtualApiRepository.findByProjectAndRequestMethodAndVirtualApiPath(project, voVirtualApi.getMethod(), voVirtualApi.getPath());
         if (Objects.isNull(existingVirtualApi)) {
             VirtualApi virtualApi = new VirtualApi();
@@ -119,5 +122,19 @@ public class VirtualApiServiceImpl implements VirtualApiService {
 
     private String removeUnnecessaryChracters(String s) {
         return s.replaceAll("\\s+", "");
+    }
+
+    private boolean validateApiRequest(VoVirtualApi voVirtualApi) {
+        boolean status = false;
+        if (RequestValidator.isValidApiMethod(voVirtualApi.getMethod()))
+            status = true;
+        else
+            throw new ApiInvalidRequest("Method name not valid", voVirtualApi.getMethod());
+
+        if (RequestValidator.isValidPath(voVirtualApi.getPath()))
+            status = true;
+        else
+            throw new ApiInvalidRequest("Path is not valid", voVirtualApi.getPath());
+        return status;
     }
 }

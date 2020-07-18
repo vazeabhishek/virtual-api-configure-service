@@ -30,6 +30,13 @@ public class Handler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse.toJsonString(objectMapper), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<Object> handleInvalidRequestException(InvalidRequestException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setDetail(ex.getMessage());
+        return new ResponseEntity<>(errorResponse.toJsonString(objectMapper), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(NoPermissionException.class)
     public ResponseEntity<Object> handleNoPermissionException(NoPermissionException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
