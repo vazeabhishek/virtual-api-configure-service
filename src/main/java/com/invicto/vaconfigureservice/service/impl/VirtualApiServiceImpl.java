@@ -1,10 +1,10 @@
 package com.invicto.vaconfigureservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
+import com.invicto.vaconfigureservice.exception.ApiAlreadyExistException;
 import com.invicto.vaconfigureservice.exception.ApiNotExistException;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.VirtualApiRepository;
@@ -36,30 +36,34 @@ public class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public ResponseEntity<String> createApi(String user, Project project, VoVirtualApi voVirtualApi) {
-        VirtualApi virtualApi = new VirtualApi();
-        virtualApi.setProject(project);
-        virtualApi.setCreatedBy(user);
-        virtualApi.setCreatedDate(LocalDateTime.now());
-        virtualApi.setVirtualApiName(voVirtualApi.getApiName());
-        virtualApi.setVirtualApiPath(voVirtualApi.getPath());
-        virtualApi.setRequestMethod(voVirtualApi.getMethod());
-        virtualApi.setAvailableAt(buildHostPath(project, voVirtualApi.getPath()));
-        virtualApi.setStatus(true);
-        List<VirtualApiSpecs> virtualApiSpecsList = new ArrayList<>();
-        voVirtualApi.getVoVirtualApiSpecList().stream().forEach(voVirtualApiSpec -> {
-            VirtualApiSpecs virtualApiSpecs = new VirtualApiSpecs();
-            virtualApiSpecs.setCreatedBy(user);
-            virtualApiSpecs.setCreatedDate(LocalDateTime.now());
-            virtualApiSpecs.setRequestPayload(removeUnnecessaryChracters(voVirtualApiSpec.getReqPayload()));
-            virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getRespPayload());
-            virtualApiSpecs.setResponseCode(voVirtualApiSpec.getHttpStatus());
-            virtualApiSpecs.setVirtualApi(virtualApi);
-            virtualApiSpecsList.add(virtualApiSpecs);
-        });
-        virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
-        virtualApiRepository.save(virtualApi);
-        GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(virtualApi.getVirtualApiId()));
-        return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
+        VirtualApi existingVirtualApi = virtualApiRepository.findByProjectAndRequestMethodAndVirtualApiPath(project, voVirtualApi.getMethod(), voVirtualApi.getPath());
+        if (Objects.isNull(existingVirtualApi)) {
+            VirtualApi virtualApi = new VirtualApi();
+            virtualApi.setProject(project);
+            virtualApi.setCreatedBy(user);
+            virtualApi.setCreatedDate(LocalDateTime.now());
+            virtualApi.setVirtualApiName(voVirtualApi.getApiName());
+            virtualApi.setVirtualApiPath(voVirtualApi.getPath());
+            virtualApi.setRequestMethod(voVirtualApi.getMethod());
+            virtualApi.setAvailableAt(buildHostPath(project, voVirtualApi.getPath()));
+            virtualApi.setStatus(true);
+            List<VirtualApiSpecs> virtualApiSpecsList = new ArrayList<>();
+            voVirtualApi.getVoVirtualApiSpecList().stream().forEach(voVirtualApiSpec -> {
+                VirtualApiSpecs virtualApiSpecs = new VirtualApiSpecs();
+                virtualApiSpecs.setCreatedBy(user);
+                virtualApiSpecs.setCreatedDate(LocalDateTime.now());
+                virtualApiSpecs.setRequestPayload(removeUnnecessaryChracters(voVirtualApiSpec.getReqPayload()));
+                virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getRespPayload());
+                virtualApiSpecs.setResponseCode(voVirtualApiSpec.getHttpStatus());
+                virtualApiSpecs.setVirtualApi(virtualApi);
+                virtualApiSpecsList.add(virtualApiSpecs);
+            });
+            virtualApi.setVirtualApiSpecs(virtualApiSpecsList);
+            virtualApiRepository.save(virtualApi);
+            GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(virtualApi.getVirtualApiId()));
+            return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.CREATED);
+        } else
+            throw new ApiAlreadyExistException(voVirtualApi.getPath());
     }
 
     @Override
@@ -102,7 +106,7 @@ public class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public VirtualApi fetchApiByProjectAndId(Project project, Long id) {
-        return virtualApiRepository.findByProjectAndVirtualApiIdAndStatus(project, id,true);
+        return virtualApiRepository.findByProjectAndVirtualApiIdAndStatus(project, id, true);
     }
 
     private String buildHostPath(Project project, String apiPath) {
@@ -112,7 +116,8 @@ public class VirtualApiServiceImpl implements VirtualApiService {
         String apiUrl = serverUrl + "/" + project.getOrganization().getOrgName().trim().toLowerCase() + "/" + project.getProjectName().trim().toLowerCase() + "" + apiPath;
         return apiUrl;
     }
-    private String removeUnnecessaryChracters(String s){
-        return s.replaceAll("\\s+","");
+
+    private String removeUnnecessaryChracters(String s) {
+        return s.replaceAll("\\s+", "");
     }
 }

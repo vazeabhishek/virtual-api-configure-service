@@ -32,7 +32,7 @@ class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project createProject(String userToken, VoProject voProject, Organization organization) {
-        Project existingProject = projectRepository.findByProjectNameAndOrganization(voProject.getProjectName(), organization);
+        Project existingProject = projectRepository.findByProjectNameAndOrganization(voProject.getProjectName().toUpperCase(), organization);
         if (Objects.isNull(existingProject)) {
             Project project = new Project();
             project.setActive(true);
