@@ -15,6 +15,7 @@ public interface VirtualApiRepository extends CrudRepository<VirtualApi, Long> {
     public List<VirtualApi> findByVirtualApiNameLike(String name);
 
     public List<VirtualApi> findByProject(Project project);
+    public List<VirtualApi> findByProjectAndStatus(Project project,boolean status);
 
     public VirtualApi findByProjectAndVirtualApiIdAndStatus(Project project, Long id, boolean status);
 }

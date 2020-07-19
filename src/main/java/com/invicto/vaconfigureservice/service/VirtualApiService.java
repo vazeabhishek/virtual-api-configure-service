@@ -13,6 +13,7 @@ public interface VirtualApiService {
      ResponseEntity<String> deleteApi(String user,Long apiId);
      ResponseEntity<String> toggleApi(String user,Long apiId);
      List<VirtualApi> getAllApisFromProject(Project project);
+     List<VirtualApi> getAllActiveApisFromProject(Project project);
      List<VirtualApiSpecs> getApiSpecs(VirtualApi virtualApi);
      VirtualApi fetchApiByProjectAndId(Project project, Long id);
 }

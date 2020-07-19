@@ -195,7 +195,7 @@ class OrganizationServiceImpl implements OrganizationService {
         if (Objects.nonNull(organization)) {
             Project project = projectService.findProjectByNameAndOrganization(voOrganizationProject.getProjectName().toUpperCase(), organization);
             if (Objects.nonNull(project)) {
-                List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(project);
+                List<VirtualApi> virtualApiList = virtualApiService.getAllActiveApisFromProject(project);
                 return new ResponseEntity<>(virtualApiList, HttpStatus.OK);
             } else
                 throw new ProjectNotExistException(voOrganizationProject.getProjectName());

@@ -103,6 +103,11 @@ class VirtualApiServiceImpl implements VirtualApiService {
     }
 
     @Override
+    public List<VirtualApi> getAllActiveApisFromProject(Project project) {
+        return virtualApiRepository.findByProjectAndStatus(project, true);
+    }
+
+    @Override
     public List<VirtualApiSpecs> getApiSpecs(VirtualApi virtualApi) {
         return virtualApiSpecsRepository.findByVirtualApi(virtualApi);
     }
