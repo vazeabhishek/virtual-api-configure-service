@@ -183,9 +183,10 @@ class OrganizationServiceImpl implements OrganizationService {
             if (Objects.nonNull(project)) {
                 List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(project);
                 return new ResponseEntity<>(virtualApiList, HttpStatus.OK);
-            }
-        }
-        return null;
+            } else
+                throw new ProjectNotExistException(String.valueOf(projId));
+        } else
+            throw new OrganizationNotExistException(String.valueOf(orgId));
     }
 
     @Override
@@ -193,8 +194,11 @@ class OrganizationServiceImpl implements OrganizationService {
         Organization organization = organizationRepository.findByOrgName(voOrganizationProject.getOrganizationName().toUpperCase());
         if (Objects.nonNull(organization)) {
             Project project = projectService.findProjectByNameAndOrganization(voOrganizationProject.getProjectName().toUpperCase(), organization);
-            List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(project);
-            return new ResponseEntity<>(virtualApiList, HttpStatus.OK);
+            if (Objects.nonNull(project)) {
+                List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(project);
+                return new ResponseEntity<>(virtualApiList, HttpStatus.OK);
+            } else
+                throw new ProjectNotExistException(voOrganizationProject.getProjectName());
         } else
             throw new OrganizationNotExistException(voOrganizationProject.getOrganizationName());
     }
