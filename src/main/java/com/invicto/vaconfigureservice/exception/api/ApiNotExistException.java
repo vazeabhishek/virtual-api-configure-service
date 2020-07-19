@@ -1,4 +1,6 @@
-package com.invicto.vaconfigureservice.exception;
+package com.invicto.vaconfigureservice.exception.api;
+
+import com.invicto.vaconfigureservice.exception.base.NotExistException;
 
 public class ApiNotExistException extends NotExistException {
 

@@ -1,5 +1,7 @@
-package com.invicto.vaconfigureservice.exception;
+package com.invicto.vaconfigureservice.exception.project;
 
+
+import com.invicto.vaconfigureservice.exception.base.NotExistException;
 
 public class ProjectNotExistException extends NotExistException {
 

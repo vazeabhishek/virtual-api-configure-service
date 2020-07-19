@@ -1,4 +1,6 @@
-package com.invicto.vaconfigureservice.exception;
+package com.invicto.vaconfigureservice.exception.organization;
+
+import com.invicto.vaconfigureservice.exception.base.InvalidRequestException;
 
 public class OrgInvalidRequest extends InvalidRequestException {
 

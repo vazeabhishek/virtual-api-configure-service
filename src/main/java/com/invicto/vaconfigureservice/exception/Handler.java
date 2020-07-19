@@ -1,8 +1,8 @@
 package com.invicto.vaconfigureservice.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.invicto.vaconfigureservice.exception.base.*;
 import com.invicto.vaconfigureservice.response.ErrorResponse;
-import com.invicto.vaconfigureservice.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

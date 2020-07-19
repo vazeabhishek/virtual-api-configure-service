@@ -2,7 +2,7 @@ package com.invicto.vaconfigureservice.response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.invicto.vaconfigureservice.exception.JsonConversionFailureException;
+import com.invicto.vaconfigureservice.exception.base.JsonConversionFailureException;
 import lombok.Data;
 
 @Data

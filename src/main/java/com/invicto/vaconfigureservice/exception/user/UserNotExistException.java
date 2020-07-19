@@ -1,4 +1,6 @@
-package com.invicto.vaconfigureservice.exception;
+package com.invicto.vaconfigureservice.exception.user;
+
+import com.invicto.vaconfigureservice.exception.base.NotExistException;
 
 public class UserNotExistException extends NotExistException {
 

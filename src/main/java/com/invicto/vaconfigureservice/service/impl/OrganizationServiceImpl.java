@@ -4,7 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
-import com.invicto.vaconfigureservice.exception.*;
+import com.invicto.vaconfigureservice.exception.api.ApiNotExistException;
+import com.invicto.vaconfigureservice.exception.base.NoPermissionException;
+import com.invicto.vaconfigureservice.exception.organization.OrgInvalidRequest;
+import com.invicto.vaconfigureservice.exception.organization.OrganizationAlreadyExistsException;
+import com.invicto.vaconfigureservice.exception.organization.OrganizationNotExistException;
+import com.invicto.vaconfigureservice.exception.project.ProjectNotExistException;
 import com.invicto.vaconfigureservice.model.VoOrganization;
 import com.invicto.vaconfigureservice.model.VoOrganizationProject;
 import com.invicto.vaconfigureservice.model.VoProject;
@@ -25,7 +30,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class OrganizationServiceImpl implements OrganizationService {
+class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;

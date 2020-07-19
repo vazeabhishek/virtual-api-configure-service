@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
-import com.invicto.vaconfigureservice.exception.ApiAlreadyExistException;
-import com.invicto.vaconfigureservice.exception.ApiInvalidRequest;
-import com.invicto.vaconfigureservice.exception.ApiNotExistException;
+import com.invicto.vaconfigureservice.exception.api.ApiAlreadyExistException;
+import com.invicto.vaconfigureservice.exception.api.ApiInvalidRequest;
+import com.invicto.vaconfigureservice.exception.api.ApiNotExistException;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.VirtualApiRepository;
 import com.invicto.vaconfigureservice.repository.VirtualApiSpecsRepository;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class VirtualApiServiceImpl implements VirtualApiService {
+class VirtualApiServiceImpl implements VirtualApiService {
 
     @Autowired
     private VirtualApiRepository virtualApiRepository;
