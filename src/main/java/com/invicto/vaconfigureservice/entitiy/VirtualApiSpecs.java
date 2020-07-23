@@ -31,6 +31,8 @@ public class VirtualApiSpecs {
     private VirtualApi virtualApi;
     @Column(name = "REQUEST_PAYLOAD")
     private String requestPayload;
+    @Column(name = "REQUEST_PAYLOAD_ORIGINAL")
+    private String requestPayloadOriginal;
     @Column(name = "RESPONSE_PAYLOAD")
     private String responsePayload;
     @Column(name = "RESPONSE_CODE")
