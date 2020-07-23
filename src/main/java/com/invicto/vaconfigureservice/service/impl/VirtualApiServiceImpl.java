@@ -14,6 +14,7 @@ import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.VirtualApiService;
 import com.invicto.vaconfigureservice.util.RequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,9 @@ class VirtualApiServiceImpl implements VirtualApiService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Value("${com.invicto.host-service-url}")
+    private String serverUrl;
 
     private final String SUCCESS = "success";
 
@@ -119,7 +123,6 @@ class VirtualApiServiceImpl implements VirtualApiService {
     }
 
     private String buildHostPath(Project project, String apiPath) {
-        String serverUrl = "http://localhost:8084";
         if (!apiPath.startsWith("/"))
             apiPath = "/" + apiPath;
         String apiUrl = serverUrl + "/" + project.getOrganization().getOrgName().trim().toLowerCase() + "/" + project.getProjectName().trim().toLowerCase() + "" + apiPath;

@@ -21,6 +21,7 @@ import com.invicto.vaconfigureservice.service.ProjectService;
 import com.invicto.vaconfigureservice.service.VirtualApiService;
 import com.invicto.vaconfigureservice.util.RequestValidator;
 import com.invicto.vaconfigureservice.util.TokenGenrator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@Slf4j
 class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
@@ -265,11 +267,9 @@ class OrganizationServiceImpl implements OrganizationService {
     }
 
     private boolean validateOrgRequest(VoOrganization voOrganization) {
-        boolean status = false;
         if (RequestValidator.isValidProjectName(voOrganization.getOrganizationName()))
-            status = true;
+            return  true;
         else
             throw new OrgInvalidRequest("Organization name not valid", voOrganization.getOrganizationName());
-        return status;
     }
 }
