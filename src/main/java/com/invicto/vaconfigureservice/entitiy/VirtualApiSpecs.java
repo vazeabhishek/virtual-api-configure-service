@@ -29,11 +29,11 @@ public class VirtualApiSpecs {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private VirtualApi virtualApi;
-    @Column(name = "REQUEST_PAYLOAD")
+    @Column(name = "REQUEST_PAYLOAD",columnDefinition="TEXT")
     private String requestPayload;
-    @Column(name = "REQUEST_PAYLOAD_ORIGINAL")
+    @Column(name = "REQUEST_PAYLOAD_ORIGINAL",columnDefinition="TEXT")
     private String requestPayloadOriginal;
-    @Column(name = "RESPONSE_PAYLOAD")
+    @Column(name = "RESPONSE_PAYLOAD",columnDefinition="TEXT")
     private String responsePayload;
     @Column(name = "RESPONSE_CODE")
     private int responseCode;
