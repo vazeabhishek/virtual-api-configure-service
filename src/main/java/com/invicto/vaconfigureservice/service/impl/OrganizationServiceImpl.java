@@ -85,7 +85,7 @@ class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public ResponseEntity<List<Organization>> findAllOrgnizationByUser(String userToken) {
-        List<Organization> organizationList = organizationRepository.findByOrgOwnerUserTokenLike(userToken);
+        List<Organization> organizationList = organizationRepository.findByOrgOwnerUserTokenLikeByOrderByOrgId(userToken);
         return new ResponseEntity<>(organizationList, HttpStatus.OK);
     }
 

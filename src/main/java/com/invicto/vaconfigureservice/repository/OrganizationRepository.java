@@ -13,6 +13,6 @@ public interface OrganizationRepository extends CrudRepository<Organization, Lon
 
     Organization findByOrgName(String orgName);
 
-    List<Organization> findByOrgOwnerUserTokenLike(String token);
+    List<Organization> findByOrgOwnerUserTokenLikeByOrderByOrgId(String token);
 
 }
