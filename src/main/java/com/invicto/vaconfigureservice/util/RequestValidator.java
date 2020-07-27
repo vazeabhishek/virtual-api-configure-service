@@ -14,6 +14,8 @@ public class RequestValidator {
         if (name == null) {
             return false;
         }
+        if (name.length() > 255)
+            return false;
         Matcher m = p.matcher(name);
         return m.matches();
     }
@@ -45,6 +47,8 @@ public class RequestValidator {
         if (name == null) {
             return false;
         }
+        if (name.length() > 255)
+            return false;
         Matcher m = p.matcher(name);
         return m.matches();
     }
@@ -56,6 +60,8 @@ public class RequestValidator {
         if (name == null) {
             return false;
         }
+        if (name.length() > 255)
+            return false;
         Matcher m = p.matcher(name);
         return m.matches();
     }
