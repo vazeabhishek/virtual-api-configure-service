@@ -106,12 +106,12 @@ class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public List<VirtualApi> getAllApisFromProject(Project project) {
-        return virtualApiRepository.findByProjectByOrderByVirtualApiId(project);
+        return virtualApiRepository.findByProject(project);
     }
 
     @Override
     public List<VirtualApi> getAllActiveApisFromProject(Project project) {
-        return virtualApiRepository.findByProjectAndStatusByOrderByVirtualApiId(project, true);
+        return virtualApiRepository.findByProjectAndStatus(project, true);
     }
 
     @Override
@@ -140,12 +140,12 @@ class VirtualApiServiceImpl implements VirtualApiService {
         if (RequestValidator.isValidApiMethod(voVirtualApi.getMethod()))
             status = true;
         else
-            throw new ApiInvalidRequest("Method name not valid", voVirtualApi.getMethod());
+            throw new ApiInvalidRequest("Method name not valid, Should not contain spaces or special chars", voVirtualApi.getMethod());
 
         if (RequestValidator.isValidPath(voVirtualApi.getPath()))
             status = true;
         else
-            throw new ApiInvalidRequest("Path is not valid", voVirtualApi.getPath());
+            throw new ApiInvalidRequest("Path is not valid, Ex: /employee/1", voVirtualApi.getPath());
         return status;
     }
 }

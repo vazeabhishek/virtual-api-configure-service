@@ -12,10 +12,10 @@ public interface VirtualApiRepository extends CrudRepository<VirtualApi, Long> {
 
     public VirtualApi findByVirtualApiId(Long id);
 
-    public List<VirtualApi> findByVirtualApiNameLikeByOrderByVirtualApiId(String name);
+    public List<VirtualApi> findByVirtualApiNameLike(String name);
 
-    public List<VirtualApi> findByProjectByOrderByVirtualApiId(Project project);
-    public List<VirtualApi> findByProjectAndStatusByOrderByVirtualApiId(Project project,boolean status);
+    public List<VirtualApi> findByProject(Project project);
+    public List<VirtualApi> findByProjectAndStatus(Project project,boolean status);
 
     public VirtualApi findByProjectAndVirtualApiIdAndStatus(Project project, Long id, boolean status);
 }

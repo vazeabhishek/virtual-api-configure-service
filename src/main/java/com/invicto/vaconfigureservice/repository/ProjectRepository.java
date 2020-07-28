@@ -17,9 +17,9 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
 
     Project findByProjectNameAndOrganization(String prjName, Organization organization);
 
-    List<Project> findByProjOwnerUserTokenLikeByOrderByProjectId(String token);
+    List<Project> findByProjOwnerUserTokenLike(String token);
 
-    List<Project> findByOrganizationByOrderByProjectId(Organization organization);
+    List<Project> findByOrganization(Organization organization);
 
     Project findByProjectIdAndOrganization(Long projectId, Organization organization);
 

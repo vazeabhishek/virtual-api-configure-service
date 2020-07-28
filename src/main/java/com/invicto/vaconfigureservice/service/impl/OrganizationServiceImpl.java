@@ -85,7 +85,7 @@ class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public ResponseEntity<List<Organization>> findAllOrgnizationByUser(String userToken) {
-        List<Organization> organizationList = organizationRepository.findByOrgOwnerUserTokenLikeByOrderByOrgId(userToken);
+        List<Organization> organizationList = organizationRepository.findByOrgOwnerUserTokenLike(userToken);
         return new ResponseEntity<>(organizationList, HttpStatus.OK);
     }
 
@@ -270,6 +270,6 @@ class OrganizationServiceImpl implements OrganizationService {
         if (RequestValidator.isValidProjectName(voOrganization.getOrganizationName()))
             return  true;
         else
-            throw new OrgInvalidRequest("Organization name not valid", voOrganization.getOrganizationName());
+            throw new OrgInvalidRequest("Organization name not valid, Should not contain spaces or special chars", voOrganization.getOrganizationName());
     }
 }
