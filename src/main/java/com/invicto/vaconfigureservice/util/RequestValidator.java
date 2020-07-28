@@ -3,6 +3,7 @@ package com.invicto.vaconfigureservice.util;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class RequestValidator {
 
@@ -13,18 +14,30 @@ public class RequestValidator {
         if (name == null) {
             return false;
         }
+        if (name.length() > 255)
+            return false;
         Matcher m = p.matcher(name);
         return m.matches();
     }
 
     public static boolean isValidPath(String name) {
-
         if (!(name.indexOf("//") == -1)) {
             return false;
         }
         if (name.charAt(0) != '/')
             return false;
-        return true;
+
+        return !CheckIfNonUrlCharsExist(name);
+
+    }
+
+    public static boolean CheckIfNonUrlCharsExist(String s) {
+        char[] invalid = {'!', '@', '#', '$', '^', '*', '(', ')', '_', '+', '=', '{', '}', ':', '"', '|', ';', '\\', '.', ',', '<', '>', '[', ']', '~', '`', '\''};
+        for (char ch : invalid) {
+            if (s.indexOf(ch) > -1)
+                return true;
+        }
+        return false;
     }
 
     public static boolean isValidProjectName(String name) {
@@ -34,6 +47,8 @@ public class RequestValidator {
         if (name == null) {
             return false;
         }
+        if (name.length() > 255)
+            return false;
         Matcher m = p.matcher(name);
         return m.matches();
     }
@@ -45,6 +60,8 @@ public class RequestValidator {
         if (name == null) {
             return false;
         }
+        if (name.length() > 255)
+            return false;
         Matcher m = p.matcher(name);
         return m.matches();
     }

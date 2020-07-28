@@ -270,6 +270,6 @@ class OrganizationServiceImpl implements OrganizationService {
         if (RequestValidator.isValidProjectName(voOrganization.getOrganizationName()))
             return  true;
         else
-            throw new OrgInvalidRequest("Organization name not valid", voOrganization.getOrganizationName());
+            throw new OrgInvalidRequest("Organization name not valid, Should not contain spaces or special chars", voOrganization.getOrganizationName());
     }
 }

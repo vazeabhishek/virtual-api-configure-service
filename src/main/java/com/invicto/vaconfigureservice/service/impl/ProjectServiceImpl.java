@@ -95,7 +95,7 @@ class ProjectServiceImpl implements ProjectService {
         if (RequestValidator.isValidProjectName(voProject.getProjectName()))
             status = true;
         else
-            throw new ProjectInvalidRequest("Project name not valid", voProject.getProjectName());
+            throw new ProjectInvalidRequest("Project name not valid, Should not contain spaces or special chars", voProject.getProjectName());
         return status;
     }
 

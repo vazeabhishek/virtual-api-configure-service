@@ -60,8 +60,10 @@ class VirtualApiServiceImpl implements VirtualApiService {
                 virtualApiSpecs.setCreatedBy(user);
                 virtualApiSpecs.setCreatedDate(LocalDateTime.now());
                 virtualApiSpecs.setRequestPayload(removeUnnecessaryChracters(voVirtualApiSpec.getReqPayload()));
+                virtualApiSpecs.setRequestHeaders(voVirtualApiSpec.getReqHeaders());
                 virtualApiSpecs.setRequestPayloadOriginal(voVirtualApiSpec.getReqPayload());
                 virtualApiSpecs.setResponsePayload(voVirtualApiSpec.getRespPayload());
+                virtualApiSpecs.setResponseHeaders(voVirtualApiSpec.getRespHeaders());
                 virtualApiSpecs.setResponseCode(voVirtualApiSpec.getHttpStatus());
                 virtualApiSpecs.setVirtualApi(virtualApi);
                 virtualApiSpecsList.add(virtualApiSpecs);
@@ -138,12 +140,12 @@ class VirtualApiServiceImpl implements VirtualApiService {
         if (RequestValidator.isValidApiMethod(voVirtualApi.getMethod()))
             status = true;
         else
-            throw new ApiInvalidRequest("Method name not valid", voVirtualApi.getMethod());
+            throw new ApiInvalidRequest("Method name not valid, Should not contain spaces or special chars", voVirtualApi.getMethod());
 
         if (RequestValidator.isValidPath(voVirtualApi.getPath()))
             status = true;
         else
-            throw new ApiInvalidRequest("Path is not valid", voVirtualApi.getPath());
+            throw new ApiInvalidRequest("Path is not valid, Ex: /employee/1", voVirtualApi.getPath());
         return status;
     }
 }
