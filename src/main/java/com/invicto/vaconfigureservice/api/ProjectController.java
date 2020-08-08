@@ -7,7 +7,7 @@ import com.invicto.vaconfigureservice.model.VoOrganization;
 import com.invicto.vaconfigureservice.model.VoOrganizationProject;
 import com.invicto.vaconfigureservice.model.VoProject;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
-import com.invicto.vaconfigureservice.service.OrganizationService;
+import com.invicto.vaconfigureservice.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import java.util.List;
 public class ProjectController {
 
     @Autowired
-    private OrganizationService organizationService;
+    private ProjectService organizationService;
 
     @PostMapping("orgs")
     public ResponseEntity<String> createOrganization(@RequestHeader(name = "user") String userToken, @RequestBody VoOrganization voOrganization) {
