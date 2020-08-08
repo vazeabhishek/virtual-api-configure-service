@@ -18,86 +18,86 @@ import java.util.List;
 public class ProjectController {
 
     @Autowired
-    private ProjectService organizationService;
+    private ProjectService projectService;
 
-    @PostMapping("orgs")
-    public ResponseEntity<String> createOrganization(@RequestHeader(name = "user") String userToken, @RequestBody VoProject voOrganization) {
-        return organizationService.createProject(userToken, voOrganization);
+    @PostMapping("projects")
+    public ResponseEntity<String> createProject(@RequestHeader(name = "user") String userToken, @RequestBody VoProject voOrganization) {
+        return projectService.createProject(userToken, voOrganization);
     }
 
-    @PostMapping("orgs/{orgId}/projects")
-    public ResponseEntity<String> createProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
-        return organizationService.createCollection(userToken, orgId, voCollection);
+    @PostMapping("projects/{projectId}/collections")
+    public ResponseEntity<String> createCollection(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
+        return projectService.createCollection(userToken, orgId, voCollection);
     }
 
-    @PostMapping("orgs/{orgId}/projects/{projId}/apis")
+    @PostMapping("projects/{projectId}/collections/{collectionId}/apis")
     public ResponseEntity<String> createApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @RequestBody VoVirtualApi voVirtualApi) {
-        return organizationService.createApi(userToken, orgId, projId, voVirtualApi);
+        return projectService.createApi(userToken, orgId, projId, voVirtualApi);
     }
 
-    @DeleteMapping("orgs/{orgId}")
-    public ResponseEntity<String> deleteOrganization(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
-        return organizationService.deleteProject(userToken, orgId);
+    @DeleteMapping("projects/{projectId}")
+    public ResponseEntity<String> deleteProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
+        return projectService.deleteProject(userToken, orgId);
     }
 
-    @DeleteMapping("orgs/{orgId}/projects/{projId}")
-    public ResponseEntity<String> deleteProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return organizationService.deleteCollection(userToken, orgId, projId);
+    @DeleteMapping("projects/{projectId}/collections/{collectionId}")
+    public ResponseEntity<String> deleteCollection(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
+        return projectService.deleteCollection(userToken, orgId, projId);
     }
 
-    @DeleteMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
+    @DeleteMapping("projects/{projectId}/collections/{collectionId}/apis/{apiId}")
     public ResponseEntity<String> deleteById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
-        return organizationService.deleteApiById(userToken, orgId, projId, apiId);
+        return projectService.deleteApiById(userToken, orgId, projId, apiId);
     }
 
-    @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}/toggle")
+    @GetMapping("projects/{projectId}/collections/{projId}/apis/{collectionId}/toggle")
     public ResponseEntity<String> toggleApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
-        return organizationService.toggleApi(userToken, orgId, projId, apiId);
+        return projectService.toggleApi(userToken, orgId, projId, apiId);
     }
 
-    @GetMapping("orgs")
-    public ResponseEntity<List<Project>> getOrganization(@RequestHeader(name = "user") String userToken) {
-        return organizationService.findAllProjectsByUser(userToken);
+    @GetMapping("collections")
+    public ResponseEntity<List<Project>> getProject(@RequestHeader(name = "user") String userToken) {
+        return projectService.findAllProjectsByUser(userToken);
     }
 
-    @GetMapping("orgs/{orgId}")
-    public ResponseEntity<Project> getOrganizationDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
-        return organizationService.findByProjectId(userToken, orgId);
+    @GetMapping("projects/{projectId}")
+    public ResponseEntity<Project> getProjectDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
+        return projectService.findByProjectId(userToken, orgId);
     }
 
-    @GetMapping("orgs/{orgId}/projects")
-    public ResponseEntity<List<Collection>> getProjects(@PathVariable(name = "orgId") Long orgId) {
-        return organizationService.getAllCollections(orgId);
+    @GetMapping("projects/{projectId}/collections")
+    public ResponseEntity<List<Collection>> getCollections(@PathVariable(name = "orgId") Long orgId) {
+        return projectService.getAllCollections(orgId);
     }
 
-    @GetMapping("orgs/{orgId}/projects/{projId}")
-    public ResponseEntity<Collection> getProjectsById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return organizationService.getCollectionById(userToken, orgId, projId);
+    @GetMapping("projects/{projectId}/collections/{collectionId}")
+    public ResponseEntity<Collection> getCollectionsById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
+        return projectService.getCollectionById(userToken, orgId, projId);
     }
 
-    @GetMapping("orgs/{orgId}/projects/{projId}/apis")
+    @GetMapping("projects/{projectId}/collections/{collectionId}/apis")
     public ResponseEntity<List<VirtualApi>> getApis(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return organizationService.getAllApis(orgId, projId);
+        return projectService.getAllApis(orgId, projId);
     }
 
     @PostMapping("/filter/apis")
     public ResponseEntity<List<VirtualApi>> filterApis(@RequestBody VoProjectCollection voCollectionProject) {
-        return organizationService.getAllApis(voCollectionProject);
+        return projectService.getAllApis(voCollectionProject);
     }
 
-    @PostMapping("/filter/orgs")
-    public ResponseEntity<Project> filterOrganization(@RequestBody VoProject voOrganization) {
-        return organizationService.findByProjectName(voOrganization.getProjectName());
+    @PostMapping("/filter/projects")
+    public ResponseEntity<Project> filterProjects(@RequestBody VoProject voOrganization) {
+        return projectService.findByProjectName(voOrganization.getProjectName());
     }
 
-    @PostMapping("/filter/{orgId}/projects")
-    public ResponseEntity<Collection> filterProjectByName(@PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
-        return organizationService.getCollectionsByProjectIdAndCollectionName(orgId, voCollection.getCollectionName());
+    @PostMapping("/filter/{projectId}/collections")
+    public ResponseEntity<Collection> filterCollectionsByName(@PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
+        return projectService.getCollectionsByProjectIdAndCollectionName(orgId, voCollection.getCollectionName());
     }
 
-    @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
+    @GetMapping("projects/{projectId}/collections/{collectionId}/apis/{apiId}")
     public ResponseEntity<VirtualApi> getApisById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
-        return organizationService.getApisById(orgId, projId, apiId);
+        return projectService.getApisById(orgId, projId, apiId);
     }
 
 }
