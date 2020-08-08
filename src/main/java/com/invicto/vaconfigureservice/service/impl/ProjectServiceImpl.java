@@ -1,14 +1,14 @@
 package com.invicto.vaconfigureservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.entitiy.Collection;
 import com.invicto.vaconfigureservice.exception.base.NoPermissionException;
-import com.invicto.vaconfigureservice.exception.project.ProjectAlreadyExistException;
-import com.invicto.vaconfigureservice.exception.project.ProjectInvalidRequest;
-import com.invicto.vaconfigureservice.exception.project.ProjectNotExistException;
+import com.invicto.vaconfigureservice.exception.project.CollectionAlreadyExistException;
+import com.invicto.vaconfigureservice.exception.project.CollectionInvalidRequest;
+import com.invicto.vaconfigureservice.exception.project.CollectionNotExistException;
 import com.invicto.vaconfigureservice.model.VoProject;
-import com.invicto.vaconfigureservice.repository.ProjectRepository;
+import com.invicto.vaconfigureservice.repository.CollectionRepository;
 import com.invicto.vaconfigureservice.response.GenericResponse;
 import com.invicto.vaconfigureservice.service.ProjectService;
 import com.invicto.vaconfigureservice.util.RequestValidator;
@@ -24,7 +24,7 @@ import java.util.Objects;
 class ProjectServiceImpl implements ProjectService {
 
     @Autowired
-    private ProjectRepository projectRepository;
+    private CollectionRepository collectionRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -32,62 +32,62 @@ class ProjectServiceImpl implements ProjectService {
     private final String SUCCESS = "success";
 
     @Override
-    public Project createProject(String userToken, VoProject voProject, Organization organization) {
+    public Collection createProject(String userToken, VoProject voProject, Project project) {
         validateProjectRequest(voProject);
-        Project existingProject = projectRepository.findByProjectNameAndOrganization(voProject.getProjectName().toUpperCase(), organization);
-        if (Objects.isNull(existingProject)) {
-            Project project = new Project();
-            project.setActive(true);
-            project.setCreatedBy(userToken);
-            project.setProjectName(voProject.getProjectName().toUpperCase());
-            project.setProjOwnerUserToken(userToken);
-            project.setCreatedDate(LocalDateTime.now());
-            project.setOrganization(organization);
-            return projectRepository.save(project);
+        Collection existingCollection = collectionRepository.findByProjectNameAndOrganization(voProject.getProjectName().toUpperCase(), project);
+        if (Objects.isNull(existingCollection)) {
+            Collection collection = new Collection();
+            collection.setActive(true);
+            collection.setCreatedBy(userToken);
+            collection.setCollectionName(voProject.getProjectName().toUpperCase());
+            collection.setCollectionOwnerUserToken(userToken);
+            collection.setCreatedDate(LocalDateTime.now());
+            collection.setProject(project);
+            return collectionRepository.save(collection);
         } else
-            throw new ProjectAlreadyExistException(voProject.getProjectName());
+            throw new CollectionAlreadyExistException(voProject.getProjectName());
     }
 
     @Override
     public ResponseEntity<String> deleteProject(Long projectId) {
-        Project project = projectRepository.findByProjectId(projectId);
-        if (Objects.nonNull(project)) {
-            projectRepository.delete(project);
+        Collection collection = collectionRepository.findByProjectId(projectId);
+        if (Objects.nonNull(collection)) {
+            collectionRepository.delete(collection);
             GenericResponse genericResponse = new GenericResponse(SUCCESS, String.valueOf(projectId));
             return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
         } else
-            throw new ProjectNotExistException(String.valueOf(projectId));
+            throw new CollectionNotExistException(String.valueOf(projectId));
     }
 
     @Override
-    public List<Project> getProjectsByOrganization(Organization organization) {
-        return projectRepository.findByOrganization(organization);
+    public List<Collection> getProjectsByOrganization(Project project) {
+        return collectionRepository.findByOrganization(project);
     }
 
     @Override
-    public Project getProjectByOrganizationAndId(Organization organization, Long id) {
-        return projectRepository.findByOrganizationAndProjectId(organization, id);
+    public Collection getProjectByOrganizationAndId(Project project, Long id) {
+        return collectionRepository.findByOrganizationAndProjectId(project, id);
     }
 
     @Override
-    public Project findProjectByIdAndOrganization(String userToken, Long projectId, Organization organization) {
-        Project project = projectRepository.findByOrganizationAndProjectId(organization, projectId);
-        if (Objects.nonNull(project)) {
-            if (project.getProjOwnerUserToken().contentEquals(userToken)) {
-                return project;
+    public Collection findProjectByIdAndOrganization(String userToken, Long projectId, Project project) {
+        Collection collection = collectionRepository.findByOrganizationAndProjectId(project, projectId);
+        if (Objects.nonNull(collection)) {
+            if (collection.getCollectionOwnerUserToken().contentEquals(userToken)) {
+                return collection;
             } else
                 throw new NoPermissionException();
         } else
-            throw new ProjectNotExistException(String.valueOf(projectId));
+            throw new CollectionNotExistException(String.valueOf(projectId));
     }
 
     @Override
-    public Project findProjectByNameAndOrganization(String projName, Organization organization) {
-        Project project = projectRepository.findByProjectNameAndOrganization(projName.toUpperCase(), organization);
-        if (Objects.nonNull(project))
-            return project;
+    public Collection findProjectByNameAndOrganization(String projName, Project project) {
+        Collection collection = collectionRepository.findByProjectNameAndOrganization(projName.toUpperCase(), project);
+        if (Objects.nonNull(collection))
+            return collection;
         else
-            throw new ProjectNotExistException(projName);
+            throw new CollectionNotExistException(projName);
     }
 
     private boolean validateProjectRequest(VoProject voProject) {
@@ -95,7 +95,7 @@ class ProjectServiceImpl implements ProjectService {
         if (RequestValidator.isValidProjectName(voProject.getProjectName()))
             status = true;
         else
-            throw new ProjectInvalidRequest("Project name not valid, Should not contain spaces or special chars", voProject.getProjectName());
+            throw new CollectionInvalidRequest("Collection name not valid, Should not contain spaces or special chars", voProject.getProjectName());
         return status;
     }
 

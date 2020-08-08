@@ -1,7 +1,7 @@
 package com.invicto.vaconfigureservice.entitiy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,48 +13,40 @@ import java.util.List;
 @Entity(name = "PROJECT")
 @Getter
 @Setter
+@EqualsAndHashCode
 @Table(name = "PROJECT",
-        indexes = {@Index(name = "primary_index", columnList = "PROJECT_ID", unique = true)})
+        indexes = {@Index(name = "primary_index", columnList = "PROJECT_ID", unique = true),
+                @Index(name = "secondary_index", columnList = "PROJECT_NAME", unique = false)},
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"PROJECT_NAME"}))
 public class Project {
     @Id
-    @Column(name = "PROJECT_ID")
-    @GeneratedValue(generator = "prj-sequence-generator")
+    @Column(name = "PROJECT_ID", nullable = false)
+    @GeneratedValue(generator = "project-sequence-generator")
     @GenericGenerator(
-            name = "prj-sequence-generator",
+            name = "org-sequence-generator",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "prj_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "project_sequence"),
                     @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
                     @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
             }
     )
-    private Long projectId;
-    @ManyToOne(targetEntity = Organization.class, fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
-    @JsonIgnore
-    private Organization organization;
-    @Column(name = "PROJECT_NAME")
+    private long projectId;
+    @Column(name = "PROJECT_NAME", nullable = false)
     private String projectName;
-    @Column(name = "PROJECT_OWNER_USERTOKEN")
-    private String projOwnerUserToken;
-    @Column(name = "CREATED_DATE")
+    @Column(name = "PROJECT_OWNER_USER_TOKEN", nullable = false)
+    private String projectOwnerUserToken;
+    @Column(name = "PROJECT_TOKEN", nullable = false)
+    private String projectToken;
+    @Column(name = "CREATED_DATE", nullable = false)
     private LocalDateTime createdDate;
-    @Column(name = "CREATED_BY")
+    @Column(name = "CREATED_BY", nullable = false)
     private String createdBy;
-    @Column(name = "IS_ACTIVE")
+    @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
-    @OneToMany(targetEntity = VirtualApi.class,mappedBy = "project",orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, targetEntity = Collection.class, mappedBy = "project", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<VirtualApi> virtualApisList;
+    private List<Collection> collectionList;
 
-    @Override
-    public String toString() {
-        return "Project{" +
-                "projectId=" + projectId +
-                ", projectName='" + projectName + '\'' +
-                ", projOwnerUserToken='" + projOwnerUserToken + '\'' +
-                ", createdDate=" + createdDate +
-                ", createdBy='" + createdBy + '\'' +
-                ", isActive=" + isActive +
-                '}';
-    }
 }

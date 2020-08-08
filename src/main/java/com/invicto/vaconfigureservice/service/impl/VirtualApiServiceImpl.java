@@ -1,7 +1,7 @@
 package com.invicto.vaconfigureservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.entitiy.Collection;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
 import com.invicto.vaconfigureservice.exception.api.ApiAlreadyExistException;
@@ -41,18 +41,18 @@ class VirtualApiServiceImpl implements VirtualApiService {
     private final String SUCCESS = "success";
 
     @Override
-    public ResponseEntity<String> createApi(String user, Project project, VoVirtualApi voVirtualApi) {
+    public ResponseEntity<String> createApi(String user, Collection collection, VoVirtualApi voVirtualApi) {
         validateApiRequest(voVirtualApi);
-        VirtualApi existingVirtualApi = virtualApiRepository.findByProjectAndRequestMethodAndVirtualApiPath(project, voVirtualApi.getMethod(), voVirtualApi.getPath());
+        VirtualApi existingVirtualApi = virtualApiRepository.findByProjectAndRequestMethodAndVirtualApiPath(collection, voVirtualApi.getMethod(), voVirtualApi.getPath());
         if (Objects.isNull(existingVirtualApi)) {
             VirtualApi virtualApi = new VirtualApi();
-            virtualApi.setProject(project);
+            virtualApi.setCollection(collection);
             virtualApi.setCreatedBy(user);
             virtualApi.setCreatedDate(LocalDateTime.now());
             virtualApi.setVirtualApiName(voVirtualApi.getApiName());
             virtualApi.setVirtualApiPath(voVirtualApi.getPath());
             virtualApi.setRequestMethod(voVirtualApi.getMethod());
-            virtualApi.setAvailableAt(buildHostPath(project, voVirtualApi.getPath()));
+            virtualApi.setAvailableAt(buildHostPath(collection, voVirtualApi.getPath()));
             virtualApi.setStatus(true);
             List<VirtualApiSpecs> virtualApiSpecsList = new ArrayList<>();
             voVirtualApi.getVoVirtualApiSpecList().stream().forEach(voVirtualApiSpec -> {
@@ -105,13 +105,13 @@ class VirtualApiServiceImpl implements VirtualApiService {
     }
 
     @Override
-    public List<VirtualApi> getAllApisFromProject(Project project) {
-        return virtualApiRepository.findByProject(project);
+    public List<VirtualApi> getAllApisFromProject(Collection collection) {
+        return virtualApiRepository.findByProject(collection);
     }
 
     @Override
-    public List<VirtualApi> getAllActiveApisFromProject(Project project) {
-        return virtualApiRepository.findByProjectAndStatus(project, true);
+    public List<VirtualApi> getAllActiveApisFromProject(Collection collection) {
+        return virtualApiRepository.findByProjectAndStatus(collection, true);
     }
 
     @Override
@@ -120,14 +120,14 @@ class VirtualApiServiceImpl implements VirtualApiService {
     }
 
     @Override
-    public VirtualApi fetchApiByProjectAndId(Project project, Long id) {
-        return virtualApiRepository.findByProjectAndVirtualApiIdAndStatus(project, id, true);
+    public VirtualApi fetchApiByProjectAndId(Collection collection, Long id) {
+        return virtualApiRepository.findByProjectAndVirtualApiIdAndStatus(collection, id, true);
     }
 
-    private String buildHostPath(Project project, String apiPath) {
+    private String buildHostPath(Collection collection, String apiPath) {
         if (!apiPath.startsWith("/"))
             apiPath = "/" + apiPath;
-        String apiUrl = serverUrl + "/" + project.getOrganization().getOrgName().trim().toLowerCase() + "/" + project.getProjectName().trim().toLowerCase() + "" + apiPath;
+        String apiUrl = serverUrl + "/" + collection.getProject().getProjectName().trim().toLowerCase() + "/" + collection.getCollectionName().trim().toLowerCase() + "" + apiPath;
         return apiUrl;
     }
 

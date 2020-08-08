@@ -1,7 +1,7 @@
 package com.invicto.vaconfigureservice.api;
 
-import com.invicto.vaconfigureservice.entitiy.Organization;
 import com.invicto.vaconfigureservice.entitiy.Project;
+import com.invicto.vaconfigureservice.entitiy.Collection;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.model.VoOrganization;
 import com.invicto.vaconfigureservice.model.VoOrganizationProject;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController("/")
-public class OrganizationController {
+public class ProjectController {
 
     @Autowired
     private OrganizationService organizationService;
@@ -56,22 +56,22 @@ public class OrganizationController {
     }
 
     @GetMapping("orgs")
-    public ResponseEntity<List<Organization>> getOrganization(@RequestHeader(name = "user") String userToken) {
+    public ResponseEntity<List<Project>> getOrganization(@RequestHeader(name = "user") String userToken) {
         return organizationService.findAllOrgnizationByUser(userToken);
     }
 
     @GetMapping("orgs/{orgId}")
-    public ResponseEntity<Organization> getOrganizationDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
+    public ResponseEntity<Project> getOrganizationDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
         return organizationService.findByOrganizationId(userToken, orgId);
     }
 
     @GetMapping("orgs/{orgId}/projects")
-    public ResponseEntity<List<Project>> getProjects(@PathVariable(name = "orgId") Long orgId) {
+    public ResponseEntity<List<Collection>> getProjects(@PathVariable(name = "orgId") Long orgId) {
         return organizationService.getAllProjects(orgId);
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}")
-    public ResponseEntity<Project> getProjectsById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
+    public ResponseEntity<Collection> getProjectsById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
         return organizationService.getProjectById(userToken, orgId, projId);
     }
 
@@ -86,12 +86,12 @@ public class OrganizationController {
     }
 
     @PostMapping("/filter/orgs")
-    public ResponseEntity<Organization> filterOrganization(@RequestBody VoOrganization voOrganization) {
+    public ResponseEntity<Project> filterOrganization(@RequestBody VoOrganization voOrganization) {
         return organizationService.findByOrganizationName(voOrganization.getOrganizationName());
     }
 
     @PostMapping("/filter/{orgId}/projects")
-    public ResponseEntity<Project> filterProjectByName(@PathVariable(name = "orgId") Long orgId,@RequestBody VoProject voProject) {
+    public ResponseEntity<Collection> filterProjectByName(@PathVariable(name = "orgId") Long orgId, @RequestBody VoProject voProject) {
         return organizationService.getProjectByOrganization(orgId,voProject.getProjectName());
     }
 
