@@ -3,9 +3,9 @@ package com.invicto.vaconfigureservice.api;
 import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.Collection;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
-import com.invicto.vaconfigureservice.model.VoOrganization;
-import com.invicto.vaconfigureservice.model.VoOrganizationProject;
 import com.invicto.vaconfigureservice.model.VoProject;
+import com.invicto.vaconfigureservice.model.VoOrganizationProject;
+import com.invicto.vaconfigureservice.model.VoCollection;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +21,13 @@ public class ProjectController {
     private ProjectService organizationService;
 
     @PostMapping("orgs")
-    public ResponseEntity<String> createOrganization(@RequestHeader(name = "user") String userToken, @RequestBody VoOrganization voOrganization) {
-        return organizationService.createOrganization(userToken, voOrganization);
+    public ResponseEntity<String> createOrganization(@RequestHeader(name = "user") String userToken, @RequestBody VoProject voOrganization) {
+        return organizationService.createProject(userToken, voOrganization);
     }
 
     @PostMapping("orgs/{orgId}/projects")
-    public ResponseEntity<String> createProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @RequestBody VoProject voProject) {
-        return organizationService.addProject(userToken, orgId, voProject);
+    public ResponseEntity<String> createProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
+        return organizationService.createCollection(userToken, orgId, voCollection);
     }
 
     @PostMapping("orgs/{orgId}/projects/{projId}/apis")
@@ -37,12 +37,12 @@ public class ProjectController {
 
     @DeleteMapping("orgs/{orgId}")
     public ResponseEntity<String> deleteOrganization(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
-        return organizationService.deleteOrganization(userToken, orgId);
+        return organizationService.deleteProject(userToken, orgId);
     }
 
     @DeleteMapping("orgs/{orgId}/projects/{projId}")
     public ResponseEntity<String> deleteProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return organizationService.removeProject(userToken, orgId, projId);
+        return organizationService.deleteCollection(userToken, orgId, projId);
     }
 
     @DeleteMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")
@@ -57,22 +57,22 @@ public class ProjectController {
 
     @GetMapping("orgs")
     public ResponseEntity<List<Project>> getOrganization(@RequestHeader(name = "user") String userToken) {
-        return organizationService.findAllOrgnizationByUser(userToken);
+        return organizationService.findAllProjectsByUser(userToken);
     }
 
     @GetMapping("orgs/{orgId}")
     public ResponseEntity<Project> getOrganizationDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
-        return organizationService.findByOrganizationId(userToken, orgId);
+        return organizationService.findByProjectId(userToken, orgId);
     }
 
     @GetMapping("orgs/{orgId}/projects")
     public ResponseEntity<List<Collection>> getProjects(@PathVariable(name = "orgId") Long orgId) {
-        return organizationService.getAllProjects(orgId);
+        return organizationService.getAllCollections(orgId);
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}")
     public ResponseEntity<Collection> getProjectsById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return organizationService.getProjectById(userToken, orgId, projId);
+        return organizationService.getCollectionById(userToken, orgId, projId);
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}/apis")
@@ -86,13 +86,13 @@ public class ProjectController {
     }
 
     @PostMapping("/filter/orgs")
-    public ResponseEntity<Project> filterOrganization(@RequestBody VoOrganization voOrganization) {
-        return organizationService.findByOrganizationName(voOrganization.getOrganizationName());
+    public ResponseEntity<Project> filterOrganization(@RequestBody VoProject voOrganization) {
+        return organizationService.findByProjectName(voOrganization.getProjectName());
     }
 
     @PostMapping("/filter/{orgId}/projects")
-    public ResponseEntity<Collection> filterProjectByName(@PathVariable(name = "orgId") Long orgId, @RequestBody VoProject voProject) {
-        return organizationService.getProjectByOrganization(orgId,voProject.getProjectName());
+    public ResponseEntity<Collection> filterProjectByName(@PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
+        return organizationService.getCollectionsByProject(orgId, voCollection.getCollectionName());
     }
 
     @GetMapping("orgs/{orgId}/projects/{projId}/apis/{apiId}")

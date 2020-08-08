@@ -8,11 +8,8 @@ import java.util.List;
 
 @Repository
 public interface ProjectRepository extends CrudRepository<Project, Long> {
-
-    Project findByOrgId(Long id);
-
-    Project findByOrgName(String orgName);
-
-    List<Project> findByOrgOwnerUserTokenLike(String token);
+    Project findByProjectId(Long id);
+    Project findByProjectName(String orgName);
+    List<Project> findByProjectOwnerUserTokenLike(String token);
 
 }
