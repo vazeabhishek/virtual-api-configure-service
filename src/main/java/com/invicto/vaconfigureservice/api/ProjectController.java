@@ -55,7 +55,7 @@ public class ProjectController {
         return projectService.toggleApi(userToken, projectId, collectionId, apiId);
     }
 
-    @GetMapping("collections")
+    @GetMapping("projects")
     public ResponseEntity<List<Project>> getProject(@RequestHeader(name = "user") String userToken) {
         return projectService.findAllProjectsByUser(userToken);
     }
