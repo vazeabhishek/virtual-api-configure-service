@@ -11,7 +11,7 @@ import com.invicto.vaconfigureservice.exception.organization.ProjectAlreadyExist
 import com.invicto.vaconfigureservice.exception.organization.ProjectNotExistException;
 import com.invicto.vaconfigureservice.exception.project.CollectionNotExistException;
 import com.invicto.vaconfigureservice.model.VoProject;
-import com.invicto.vaconfigureservice.model.VoOrganizationProject;
+import com.invicto.vaconfigureservice.model.VoProjectCollection;
 import com.invicto.vaconfigureservice.model.VoCollection;
 import com.invicto.vaconfigureservice.model.VoVirtualApi;
 import com.invicto.vaconfigureservice.repository.ProjectRepository;
@@ -69,17 +69,17 @@ class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<String> deleteProject(String userToken, Long orgId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<String> deleteProject(String userToken, Long projId) {
+        Project project = projectRepository.findByProjectId(projId);
         if (Objects.isNull(project))
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projId));
         else {
             if (project.getCreatedBy().contentEquals(userToken))
                 projectRepository.delete(project);
             else
                 throw new NoPermissionException();
         }
-        GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(orgId));
+        GenericResponse genericResponse = new GenericResponse(MSG_SUCCESS, String.valueOf(projId));
         return new ResponseEntity<>(genericResponse.toJsonString(objectMapper), HttpStatus.ACCEPTED);
     }
 
@@ -90,30 +90,30 @@ class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Project> findByProjectId(String userToken, Long orgId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<Project> findByProjectId(String userToken, Long projectId) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
             if (project.getProjectOwnerUserToken().contentEquals(userToken))
                 return new ResponseEntity<>(project, HttpStatus.OK);
             else
                 throw new NoPermissionException();
         } else
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
     }
 
     @Override
-    public ResponseEntity<Project> findByProjectName(String organization) {
-        Project projectObj = projectRepository.findByProjectName(organization.toUpperCase());
-        if (Objects.nonNull(organization)) {
+    public ResponseEntity<Project> findByProjectName(String projectName) {
+        Project projectObj = projectRepository.findByProjectName(projectName.toUpperCase());
+        if (Objects.nonNull(projectName)) {
             return new ResponseEntity<>(projectObj, HttpStatus.OK);
         } else
-            throw new ProjectNotExistException(organization);
+            throw new ProjectNotExistException(projectName);
 
     }
 
     @Override
-    public ResponseEntity<String> createCollection(String userToken, Long orgId, VoCollection voCollection) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<String> createCollection(String userToken, Long projId, VoCollection voCollection) {
+        Project project = projectRepository.findByProjectId(projId);
         if (Objects.nonNull(project)) {
             if (project.getProjectOwnerUserToken().contentEquals(userToken)) {
                 Collection collection = collectionService.createCollection(userToken, voCollection, project);
@@ -122,21 +122,21 @@ class ProjectServiceImpl implements ProjectService {
             } else
                 throw new NoPermissionException();
         } else {
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projId));
         }
     }
 
     @Override
-    public ResponseEntity<String> deleteCollection(String userToken, Long orgId, Long projId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<String> deleteCollection(String userToken, Long projectId, Long collectionId) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
-            Collection collection = collectionService.getCollectionByProjectAndId(project, projId);
+            Collection collection = collectionService.getCollectionByProjectAndId(project, collectionId);
             if (Objects.nonNull(collection))
                 return collectionService.deleteCollection(collection.getCollectionId());
             else
-                throw new CollectionNotExistException(String.valueOf(projId));
+                throw new CollectionNotExistException(String.valueOf(collectionId));
         } else {
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
         }
     }
 
@@ -151,25 +151,25 @@ class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Collection> getCollectionsByProject(Long orgId, String projectName) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<Collection> getCollectionsByProjectIdAndCollectionName(Long projectId, String collectionName) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.isNull(project))
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
         else {
-            Collection collection = collectionService.findCollectionByNameAndProject(projectName, project);
+            Collection collection = collectionService.findCollectionByNameAndProject(collectionName, project);
             ResponseEntity<Collection> responseEntity = new ResponseEntity<>(collection, HttpStatus.OK);
             return responseEntity;
         }
     }
 
     @Override
-    public ResponseEntity<Collection> getCollectionById(String userToken, Long orgId, Long projId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<Collection> getCollectionById(String userToken, Long projectId, Long collectionId) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.isNull(project))
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
         else {
             if (project.getCreatedBy().contentEquals(userToken)) {
-                Collection collection = collectionService.findCollectionByIdAndProject(userToken, projId, project);
+                Collection collection = collectionService.findCollectionByIdAndProject(userToken, collectionId, project);
                 ResponseEntity<Collection> responseEntity = new ResponseEntity<>(collection, HttpStatus.OK);
                 return responseEntity;
             } else
@@ -178,98 +178,98 @@ class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<List<VirtualApi>> getAllApis(Long orgId, Long projId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<List<VirtualApi>> getAllApis(Long projectId, Long collectionId) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
-            Collection collection = collectionService.getCollectionByProjectAndId(project, projId);
+            Collection collection = collectionService.getCollectionByProjectAndId(project, collectionId);
             if (Objects.nonNull(collection)) {
                 List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(collection);
                 return new ResponseEntity<>(virtualApiList, HttpStatus.OK);
             } else
-                throw new CollectionNotExistException(String.valueOf(projId));
+                throw new CollectionNotExistException(String.valueOf(collectionId));
         } else
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
     }
 
     @Override
-    public ResponseEntity<List<VirtualApi>> getAllApis(VoOrganizationProject voOrganizationProject) {
-        Project project = projectRepository.findByProjectName(voOrganizationProject.getOrganizationName().toUpperCase());
+    public ResponseEntity<List<VirtualApi>> getAllApis(VoProjectCollection voCollectionProject) {
+        Project project = projectRepository.findByProjectName(voCollectionProject.getProjectName().toUpperCase());
         if (Objects.nonNull(project)) {
-            Collection collection = collectionService.findCollectionByNameAndProject(voOrganizationProject.getProjectName().toUpperCase(), project);
+            Collection collection = collectionService.findCollectionByNameAndProject(voCollectionProject.getCollectionName().toUpperCase(), project);
             if (Objects.nonNull(collection)) {
                 List<VirtualApi> virtualApiList = virtualApiService.getAllActiveApisFromProject(collection);
                 return new ResponseEntity<>(virtualApiList, HttpStatus.OK);
             } else
-                throw new CollectionNotExistException(voOrganizationProject.getProjectName());
+                throw new CollectionNotExistException(voCollectionProject.getCollectionName());
         } else
-            throw new ProjectNotExistException(voOrganizationProject.getOrganizationName());
+            throw new ProjectNotExistException(voCollectionProject.getProjectName());
     }
 
     @Override
-    public ResponseEntity<VirtualApi> getApisById(Long orgId, Long projId, Long ApiId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<VirtualApi> getApisById(Long projectId, Long collectionId, Long apiId) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
-            Collection collection = collectionService.getCollectionByProjectAndId(project, projId);
+            Collection collection = collectionService.getCollectionByProjectAndId(project, collectionId);
             if (Objects.nonNull(collection)) {
                 List<VirtualApi> virtualApiList = virtualApiService.getAllApisFromProject(collection);
                 Optional<VirtualApi> virtualApi = virtualApiList.stream().filter(vApi ->
-                        vApi.getVirtualApiId().compareTo(ApiId) == 0
+                        vApi.getVirtualApiId().compareTo(apiId) == 0
                 ).findFirst();
                 if (virtualApi.isPresent())
                     return new ResponseEntity<>(virtualApi.get(), HttpStatus.OK);
                 else
-                    throw new ApiNotExistException(String.valueOf(ApiId));
+                    throw new ApiNotExistException(String.valueOf(apiId));
             } else
-                throw new CollectionNotExistException(String.valueOf(projId));
+                throw new CollectionNotExistException(String.valueOf(collectionId));
 
         } else
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
     }
 
     @Override
-    public ResponseEntity<String> createApi(String userToken, Long orgId, Long projId, VoVirtualApi voVirtualApi) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<String> createApi(String userToken, Long projectId, Long collectionId, VoVirtualApi voVirtualApi) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
-            Collection collection = collectionService.getCollectionByProjectAndId(project, projId);
+            Collection collection = collectionService.getCollectionByProjectAndId(project, collectionId);
             if (Objects.nonNull(collection)) {
                 return virtualApiService.createApi(userToken, collection, voVirtualApi);
             } else
-                throw new CollectionNotExistException(String.valueOf(projId));
+                throw new CollectionNotExistException(String.valueOf(collectionId));
         } else {
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
         }
     }
 
     @Override
-    public ResponseEntity<String> deleteApiById(String userToken, Long orgId, Long projId, Long apiId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<String> deleteApiById(String userToken, Long projectId, Long collectionId, Long apiId) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
-            Collection collection = collectionService.getCollectionByProjectAndId(project, projId);
+            Collection collection = collectionService.getCollectionByProjectAndId(project, collectionId);
             if (Objects.nonNull(collection)) {
                 return virtualApiService.deleteApi(userToken, apiId);
             } else
-                throw new CollectionNotExistException(String.valueOf(projId));
+                throw new CollectionNotExistException(String.valueOf(collectionId));
         } else
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
     }
 
     @Override
-    public ResponseEntity<String> toggleApi(String userToken, Long orgId, Long projId, Long apiId) {
-        Project project = projectRepository.findByProjectId(orgId);
+    public ResponseEntity<String> toggleApi(String userToken, Long projectId, Long collectionId, Long apiId) {
+        Project project = projectRepository.findByProjectId(projectId);
         if (Objects.nonNull(project)) {
-            Collection collection = collectionService.getCollectionByProjectAndId(project, projId);
+            Collection collection = collectionService.getCollectionByProjectAndId(project, collectionId);
             if (Objects.nonNull(collection)) {
                 return virtualApiService.toggleApi(userToken, apiId);
             } else
-                throw new CollectionNotExistException(String.valueOf(projId));
+                throw new CollectionNotExistException(String.valueOf(collectionId));
         } else
-            throw new ProjectNotExistException(String.valueOf(orgId));
+            throw new ProjectNotExistException(String.valueOf(projectId));
     }
 
-    private boolean validateOrgRequest(VoProject voOrganization) {
-        if (RequestValidator.isValidProjectName(voOrganization.getProjectName()))
-            return  true;
+    private boolean validateOrgRequest(VoProject voProject) {
+        if (RequestValidator.isValidProjectName(voProject.getProjectName()))
+            return true;
         else
-            throw new ProjectInvalidRequest("Project name not valid, Should not contain spaces or special chars", voOrganization.getProjectName());
+            throw new ProjectInvalidRequest("Project name not valid, Should not contain spaces or special chars", voProject.getProjectName());
     }
 }
