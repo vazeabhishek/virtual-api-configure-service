@@ -43,7 +43,7 @@ class VirtualApiServiceImpl implements VirtualApiService {
     @Override
     public ResponseEntity<String> createApi(String user, Collection collection, VoVirtualApi voVirtualApi) {
         validateApiRequest(voVirtualApi);
-        VirtualApi existingVirtualApi = virtualApiRepository.findByProjectAndRequestMethodAndVirtualApiPath(collection, voVirtualApi.getMethod(), voVirtualApi.getPath());
+        VirtualApi existingVirtualApi = virtualApiRepository.findByCollectionAndRequestMethodAndVirtualApiPath(collection, voVirtualApi.getMethod(), voVirtualApi.getPath());
         if (Objects.isNull(existingVirtualApi)) {
             VirtualApi virtualApi = new VirtualApi();
             virtualApi.setCollection(collection);
@@ -106,12 +106,12 @@ class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public List<VirtualApi> getAllApisFromProject(Collection collection) {
-        return virtualApiRepository.findByProject(collection);
+        return virtualApiRepository.findByCollection(collection);
     }
 
     @Override
     public List<VirtualApi> getAllActiveApisFromProject(Collection collection) {
-        return virtualApiRepository.findByProjectAndStatus(collection, true);
+        return virtualApiRepository.findByCollectionAndStatus(collection, true);
     }
 
     @Override
@@ -121,7 +121,7 @@ class VirtualApiServiceImpl implements VirtualApiService {
 
     @Override
     public VirtualApi fetchApiByProjectAndId(Collection collection, Long id) {
-        return virtualApiRepository.findByProjectAndVirtualApiIdAndStatus(collection, id, true);
+        return virtualApiRepository.findByCollectionAndVirtualApiIdAndStatus(collection, id, true);
     }
 
     private String buildHostPath(Collection collection, String apiPath) {

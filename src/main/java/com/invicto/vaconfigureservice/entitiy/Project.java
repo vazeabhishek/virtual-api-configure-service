@@ -24,7 +24,7 @@ public class Project {
     @Column(name = "PROJECT_ID", nullable = false)
     @GeneratedValue(generator = "project-sequence-generator")
     @GenericGenerator(
-            name = "org-sequence-generator",
+            name = "project-sequence-generator",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
                     @org.hibernate.annotations.Parameter(name = "sequence_name", value = "project_sequence"),

@@ -26,33 +26,33 @@ public class ProjectController {
     }
 
     @PostMapping("projects/{projectId}/collections")
-    public ResponseEntity<String> createCollection(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
-        return projectService.createCollection(userToken, orgId, voCollection);
+    public ResponseEntity<String> createCollection(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @RequestBody VoCollection voCollection) {
+        return projectService.createCollection(userToken, projectId, voCollection);
     }
 
     @PostMapping("projects/{projectId}/collections/{collectionId}/apis")
-    public ResponseEntity<String> createApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @RequestBody VoVirtualApi voVirtualApi) {
-        return projectService.createApi(userToken, orgId, projId, voVirtualApi);
+    public ResponseEntity<String> createApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @PathVariable(name = "collectionId") Long collectionId, @RequestBody VoVirtualApi voVirtualApi) {
+        return projectService.createApi(userToken, projectId, collectionId, voVirtualApi);
     }
 
     @DeleteMapping("projects/{projectId}")
-    public ResponseEntity<String> deleteProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
-        return projectService.deleteProject(userToken, orgId);
+    public ResponseEntity<String> deleteProject(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId) {
+        return projectService.deleteProject(userToken, projectId);
     }
 
     @DeleteMapping("projects/{projectId}/collections/{collectionId}")
-    public ResponseEntity<String> deleteCollection(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return projectService.deleteCollection(userToken, orgId, projId);
+    public ResponseEntity<String> deleteCollection(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @PathVariable(name = "collectionId") Long collectionId) {
+        return projectService.deleteCollection(userToken, projectId, collectionId);
     }
 
     @DeleteMapping("projects/{projectId}/collections/{collectionId}/apis/{apiId}")
-    public ResponseEntity<String> deleteById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
-        return projectService.deleteApiById(userToken, orgId, projId, apiId);
+    public ResponseEntity<String> deleteById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @PathVariable(name = "collectionId") Long collectionId, @PathVariable(name = "apiId") Long apiId) {
+        return projectService.deleteApiById(userToken, projectId, collectionId, apiId);
     }
 
-    @GetMapping("projects/{projectId}/collections/{projId}/apis/{collectionId}/toggle")
-    public ResponseEntity<String> toggleApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
-        return projectService.toggleApi(userToken, orgId, projId, apiId);
+    @GetMapping("projects/{projectId}/collections/{collectionId}/apis/{apiId}/toggle")
+    public ResponseEntity<String> toggleApi(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @PathVariable(name = "collectionId") Long collectionId, @PathVariable(name = "apiId") Long apiId) {
+        return projectService.toggleApi(userToken, projectId, collectionId, apiId);
     }
 
     @GetMapping("collections")
@@ -61,23 +61,23 @@ public class ProjectController {
     }
 
     @GetMapping("projects/{projectId}")
-    public ResponseEntity<Project> getProjectDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId) {
-        return projectService.findByProjectId(userToken, orgId);
+    public ResponseEntity<Project> getProjectDetails(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId) {
+        return projectService.findByProjectId(userToken, projectId);
     }
 
     @GetMapping("projects/{projectId}/collections")
-    public ResponseEntity<List<Collection>> getCollections(@PathVariable(name = "orgId") Long orgId) {
-        return projectService.getAllCollections(orgId);
+    public ResponseEntity<List<Collection>> getCollections(@PathVariable(name = "projectId") Long projectId) {
+        return projectService.getAllCollections(projectId);
     }
 
     @GetMapping("projects/{projectId}/collections/{collectionId}")
-    public ResponseEntity<Collection> getCollectionsById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return projectService.getCollectionById(userToken, orgId, projId);
+    public ResponseEntity<Collection> getCollectionsById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @PathVariable(name = "collectionId") Long collectionId) {
+        return projectService.getCollectionById(userToken, projectId, collectionId);
     }
 
     @GetMapping("projects/{projectId}/collections/{collectionId}/apis")
-    public ResponseEntity<List<VirtualApi>> getApis(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId) {
-        return projectService.getAllApis(orgId, projId);
+    public ResponseEntity<List<VirtualApi>> getApis(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @PathVariable(name = "collectionId") Long collectionId) {
+        return projectService.getAllApis(projectId, collectionId);
     }
 
     @PostMapping("/filter/apis")
@@ -91,13 +91,13 @@ public class ProjectController {
     }
 
     @PostMapping("/filter/{projectId}/collections")
-    public ResponseEntity<Collection> filterCollectionsByName(@PathVariable(name = "orgId") Long orgId, @RequestBody VoCollection voCollection) {
-        return projectService.getCollectionsByProjectIdAndCollectionName(orgId, voCollection.getCollectionName());
+    public ResponseEntity<Collection> filterCollectionsByName(@PathVariable(name = "projectId") Long projectId, @RequestBody VoCollection voCollection) {
+        return projectService.getCollectionsByProjectIdAndCollectionName(projectId, voCollection.getCollectionName());
     }
 
     @GetMapping("projects/{projectId}/collections/{collectionId}/apis/{apiId}")
-    public ResponseEntity<VirtualApi> getApisById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "orgId") Long orgId, @PathVariable(name = "projId") Long projId, @PathVariable(name = "apiId") Long apiId) {
-        return projectService.getApisById(orgId, projId, apiId);
+    public ResponseEntity<VirtualApi> getApisById(@RequestHeader(name = "user") String userToken, @PathVariable(name = "projectId") Long projectId, @PathVariable(name = "collectionId") Long collectionId, @PathVariable(name = "apiId") Long apiId) {
+        return projectService.getApisById(projectId, collectionId, apiId);
     }
 
 }
