@@ -1,6 +1,5 @@
 package com.invicto.vaconfigureservice.repository;
 
-import com.invicto.vaconfigureservice.entitiy.Project;
 import com.invicto.vaconfigureservice.entitiy.VirtualApi;
 import com.invicto.vaconfigureservice.entitiy.VirtualApiSpecs;
 import org.springframework.data.repository.CrudRepository;

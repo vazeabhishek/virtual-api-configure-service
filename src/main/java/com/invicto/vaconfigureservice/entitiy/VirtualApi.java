@@ -1,11 +1,9 @@
 package com.invicto.vaconfigureservice.entitiy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -40,10 +38,10 @@ public class VirtualApi {
     private String requestMethod;
     @Column(name = "AVAILABLE_AT")
     private String availableAt;
-    @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Collection.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "PROJECT_ID")
     @JsonIgnore
-    private Project project;
+    private Collection collection;
     @Column(name = "CREATED_BY")
     private String createdBy;
     @Column(name = "CREATED_DATE")
@@ -61,7 +59,7 @@ public class VirtualApi {
                 ", virtualApiPath='" + virtualApiPath + '\'' +
                 ", requestMethod='" + requestMethod + '\'' +
                 ", availableAt='" + availableAt + '\'' +
-                ", project=" + project +
+                ", collection=" + collection +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdDate=" + createdDate +
                 ", status=" + status +
